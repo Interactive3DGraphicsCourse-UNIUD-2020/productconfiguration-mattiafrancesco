@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>ACME product selector</title>
+		<style type="text/css">
+			body 
+			{
+				margin: 0px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="canvas"></div>
+		<script type="text/javascript" src="build/jquery.min.js"></script>
+		<script type="module">
+			import {Engine} from './Engine.js';
+
+			try
+			{
+				var engine = new Engine("canvas");
+
+				engine.start();
+			}
+			catch(e)
+			{
+				alert(e.message);
+			}
+		</script>
+	</body>
+</html>
