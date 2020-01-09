@@ -26,19 +26,71 @@ class World
 		*/
 		var object = Model.load('./model/apple_iphone_xs_max/scene.gltf',10,(model) => {
 
-			var i = 0
-			model.traverse(function(child)
-			{
-				if(child.isMesh)
-				{
-					var random = Math.random()
-					var color = 0XFFFFFF * random
-					child.material = new THREE.MeshBasicMaterial({color: color})
+			// model.traverse(function(child)
+			// {
+			// 	if(child.isMesh)
+			// 	{
+			// 		var random = Math.random()
+			// 		var color = 0XFFFFFF * random
+			// 		child.material = new THREE.MeshBasicMaterial({color: color})
+			// 	}
+			// });
+
+			var meshes = model.children[0].children[0] // array di mesh
+			meshes.children.forEach(mesh => {
+				console.log(mesh.name)
+
+				switch (mesh.name) {
+
+					case "AntennaLines": //antenne attorno al telefono
+						break
+					case "AppleLogo":
+						break
+					case "BackCameraP1": //bordo nero attorno alle fotocamere, non copre le fotocamere (ha un buco dove sono le fotocamere)
+						break
+					case "BackCamerasCover001": //si posiziona sopra le fotocamere LE COPRE
+						break
+					case "BackCameraBottomGreyRing", "BackCameraTopGreyRing": //gli anelli neri delle fotocamere dietro
+						break
+					case "BackCameraBottomLens","BackCameraTopLens": //lenti fotocamere dietro
+						break
+					case "BackGlass": //vetro dietro iphone
+						break
+					case "Body": //tutto il bordo latere del telefono
+						break
+					case "CameraBump": //la parte in rilievo che contiene le fotocamere dietro
+						break
+					case "CE": //logo CE dietro
+						break
+					case "EarphoneGrill": //griglia microfono davanti (sopra il notch)
+						break
+					case "FlashBG","FlashLED": //elementi che compongono il flash (elemento quadrato in mezzo alle due fotocamere dietro)
+						break
+					case "Front": //corpo davanti ce circonda lo schermo
+						break
+					case "FrontCamera": //camera frontale
+						break
+					case "FrontGlass": //vetro dello schermo schermo
+						break
+					case "iPhoneLogoBack":
+						break
+					case "MuteSwitch","PowerButton":
+						break
+					case "Screen": //schermo ( si trova sotto il vetro "FrontGlass")
+						break
+					case "Screw": //non ho capito che roba è (è piccola e inutile trascurare)
+						break
+					case "SimSlot":
+						break
+					case "Text : Assembled in China", "Text: Designed By Apple in California":
+						break
+					case "VolumeButtons":
+						break
 				}
+
 			});
-			model.children[0].children[0].children[1].material = new THREE.MeshBasicMaterial({color: 0XFFFFF})
+
 			this.scene.add(model)
-			console.log(model)
 		},() => {})
 	}
 
