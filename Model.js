@@ -5,7 +5,7 @@ export function load(path, newHeight, onSuccess, onError)
 {
 	var loader = new GLTFLoader();
 
-	loader.load("models/"+path, function(object)
+	loader.load(path, function(object)
 	{
 		object = object.scenes[0].children[0];
 		object.traverse(function(child)
@@ -22,9 +22,9 @@ export function load(path, newHeight, onSuccess, onError)
 		boundingBox.getSize(oldSize);
 		var scaleFactor = newHeight/oldSize.y;
 
-		object.scale.set(scaleFactor, scaleFactor, scaleFactor);
+		//object.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-		object.position.y = newHeight/2;
+		//object.position.y = newHeight/2;
 
 		onSuccess(object);
 	}, () => {}, onError);

@@ -5,7 +5,7 @@ import * as Utils from './utils.js';
 import {Group} from './Group.js';
 
 import {GUI} from './GUI.js'
-
+import * as Model from  './Model.js'
 var ANIMATION_DURATION = 4000*4;		//in milliseconds
 
 class World
@@ -15,7 +15,7 @@ class World
 		this.scene = new THREE.Scene();
 
 		this.camera = new THREE.PerspectiveCamera(75, Utils.getRatio(), 0.1, 1000);	
-		this.camera.position.set(25, 15, 25);
+		this.camera.position.set(0, 0, 25);
 
 		/*
 		//GUI
@@ -24,6 +24,22 @@ class World
 		//Animations
 		this.startTime = Date.now();
 		*/
+		var object = Model.load('./model/apple_iphone_xs_max/scene.gltf',10,(model) => {
+
+			var i = 0
+			model.traverse(function(child)
+			{
+				if(child.isMesh)
+				{
+					var random = Math.random()
+					var color = 0XFFFFFF * random
+					child.material = new THREE.MeshBasicMaterial({color: color})
+				}
+			});
+			model.children[0].children[0].children[1].material = new THREE.MeshBasicMaterial({color: 0XFFFFF})
+			this.scene.add(model)
+			console.log(model)
+		},() => {})
 	}
 
 	/*
