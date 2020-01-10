@@ -1,21 +1,18 @@
-import * as THREE from './build/three.module.js';
+import {Menu} from './Menu.js';
 
-import * as dat from './jsm/libs/dat.gui.module.js';
-
-class GUI extends dat.GUI
+class GUI
 {
-	constructor(sun, ocean, creeper)
+	constructor(htmlContainerID)
 	{
-		super();
+		var htmlContainer = $("#"+htmlContainerID);
 
-		this.options = this.addFolder('Animations');
+		this.menu = new Menu();
+		htmlContainer.append(this.menu.getHTMLElement());
 
-		this.options.open();
-	}
-
-	add(object, name)
-	{
-		this.options.add(object, 'speed', 0, 20).name(name+" speed").listen();
+		this.menu.add("Antennas");
+		this.menu.add("Logo");
+		this.menu.add("Body");
+		this.menu.add("Screen");
 	}
 }
 
