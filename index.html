@@ -1,7 +1,8 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>ACME product selector</title>
+		<title>ACME product configuration</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
 		<style type="text/css">
 			body 
 			{
@@ -78,14 +79,14 @@
 		}
 	</script>
 
-		<div id="canvas"></div>
+		<div id="productConfigurator"></div>
 		<script type="text/javascript" src="build/jquery.min.js"></script>
 		<script type="module">
 			import {Engine} from './Engine.js';
 
 			try
 			{
-				var engine = new Engine("canvas");
+				var engine = new Engine("productConfigurator");
 
 				engine.start();
 			}

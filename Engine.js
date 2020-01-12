@@ -5,6 +5,8 @@ import {OrbitControls} from './jsm/controls/OrbitControls.js';
 
 import {World} from './World.js';
 
+import {GUI} from './GUI.js';
+
 class Engine
 {
 	constructor(htmlContainerID)
@@ -28,8 +30,7 @@ class Engine
 
 		//Append canvas
 		var canvas = $(this.renderer.domElement);
-		canvas.width("100%");
-		canvas.height("100%");
+		canvas.addClass("productConfiguratorCanvas");
 
 		var htmlContainer = $("#"+htmlContainerID);
 		htmlContainer.append(canvas);
@@ -48,10 +49,14 @@ class Engine
 
 		//Append stats element
 		var statElem = $(this.stats.domElement);
-		statElem.css({position: "absolute", top: "0px"});
+		statElem.addClass("productConfiguratorStats");
 
 		htmlContainer.append(statElem);
 
+
+		//Menu
+		this.gui = new GUI(htmlContainerID);
+		
 
 		//Controls
 		this.controls = new OrbitControls(this.world.camera);

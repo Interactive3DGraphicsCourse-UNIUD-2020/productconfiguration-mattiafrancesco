@@ -116,7 +116,7 @@ class World
 					case "Screen": //schermo ( si trova sotto il vetro "FrontGlass")
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
-					case "Screw": //non ho capito che roba è (è piccola e inutile trascurare)
+					case "Screw": //non ho capito che roba è (è piccola e inutile trascurare)		N.B. screw = viti
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
 					case "SimSlot":
