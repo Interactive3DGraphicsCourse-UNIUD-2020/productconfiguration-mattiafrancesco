@@ -6,13 +6,25 @@ class GUI
 	{
 		var htmlContainer = $("#"+htmlContainerID);
 
-		this.menu = new Menu();
-		htmlContainer.append(this.menu.getHTMLElement());
+		this.menu = new Menu(htmlContainer);
+		
+		var antennasMenu = this.menu.addMenu("Antennas");
+		antennasMenu.addItem("Red");
+		antennasMenu.addItem("Green");
+		antennasMenu.addItem("Blue");
 
-		this.menu.add("Antennas");
-		this.menu.add("Logo");
-		this.menu.add("Body");
-		this.menu.add("Screen");
+		var logoMenu = this.menu.addMenu("Logo");
+		logoMenu.addItem("Smooth");
+		logoMenu.addItem("Rough");
+
+		var bodyMenu = this.menu.addMenu("Body");
+		bodyMenu.addItem("Yellow");
+		bodyMenu.addItem("Grey");
+		bodyMenu.addItem("Violet");
+
+		var screenMenu = this.menu.addMenu("Screen");
+		screenMenu.addItem("On");
+		screenMenu.addItem("Off");
 	}
 }
 

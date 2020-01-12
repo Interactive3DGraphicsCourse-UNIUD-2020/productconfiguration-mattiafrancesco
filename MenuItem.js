@@ -16,7 +16,7 @@ class MenuItem
 
 	setCallback(callback)
 	{
-		this.link.click = callback;
+		this.link.click(callback);
 	}
 
 	getHTMLElement()
