@@ -112,8 +112,8 @@ class World
 							roughness: { type: "f", value: 0.2},
 						};
 	
-					var vs = new Shader("tmp_vert.glsl").getData();
-					var fs = new Shader("tmp_frag.glsl").getData();
+					var vs = new Shader("glossyRef_vert.glsl").getData();
+					var fs = new Shader("glossyRef_frag.glsl").getData();
 
 					mesh.material = new THREE.ShaderMaterial({uniforms: uniforms, vertexShader: vs, fragmentShader: fs ,extensions: materialExtensions });
 					mesh.material.needsUpdate = true;
