@@ -31,21 +31,21 @@ class World
 		let object = Model.load('./model/scene.gltf',10, (model) => {
 
 
-			model.rotateX(90 * Math.PI / 180)
-			model.translateZ(-10)
-			model.translateY(-2)
+			model.rotateX(90 * Math.PI / 180);
+			model.translateZ(-10);
+			model.translateY(-2);
 
 			var meshes = model.children[0].children[0] // array di mesh
 			meshes.children.forEach(obj => {
-				console.log(obj)
-				var testColor = 0XFF0000
+				console.log(obj);
+				var testColor = 0XFF0000;
 				var mesh = obj.children[0]
 				switch (obj.name) {
 					case "AntennaLines": //antenne attorno al telefono
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "AppleLogo":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "BackCameraP1": //bordo nero attorno alle fotocamere, non copre le fotocamere (ha un buco dove sono le fotocamere)
 					/*
@@ -72,40 +72,41 @@ class World
 						
 					break
 					case "BackCamerasCover001": //si posiziona sopra le fotocamere LE COPRE
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "BackCameraBottomGreyRing", "BackCameraTopGreyRing": //gli anelli neri delle fotocamere dietro
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "BackCameraBottomLens","BackCameraTopLens": //lenti fotocamere dietro
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "BackGlass": //vetro dietro iphone
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "Body": //tutto il bordo latere del telefono
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "CameraBump": //la parte in rilievo che contiene le fotocamere dietro
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "CE": //logo CE dietro
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "EarphoneGrill": //griglia microfono davanti (sopra il notch)
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "FlashBG","FlashLED": //elementi che compongono il flash (elemento quadrato in mezzo alle due fotocamere dietro)
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "Front": //corpo davanti che circonda lo schermo
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "FrontCamera": //camera frontale
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "FrontGlass": //vetro dello schermo schermo
 						//mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						
 						var vs = new Shader("tmp_vert.glsl").getData();
 						var fs = new Shader("tmp_frag.glsl").getData();
 
@@ -113,34 +114,62 @@ class World
 
 						mesh.material = new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs });
 						mesh.material.needsUpdate = true;
+						
+						//var textureLoader = new THREE.TextureLoader();
+
+						//var textureEquirec = textureLoader.load( "./textures/env/overwatch.jpg" );
+						/*
+						textureEquirec.mapping = THREE.EquirectangularReflectionMapping;
+						textureEquirec.magFilter = THREE.LinearFilter;
+						textureEquirec.minFilter = THREE.LinearMipmapLinearFilter;
+						textureEquirec.encoding = THREE.sRGBEncoding;
+
+						// Materials
+
+						var equirectShader = THREE.ShaderLib[ "equirect" ];
+
+						var equirectMaterial = new THREE.ShaderMaterial( {
+							fragmentShader: equirectShader.fragmentShader,
+							vertexShader: equirectShader.vertexShader,
+							uniforms: equirectShader.uniforms,
+							depthWrite: false,
+							side: THREE.BackSide
+						} );
+
+						equirectMaterial.uniforms[ "tEquirect" ].value = textureEquirec;
+
+						mesh.material = equirectMaterial;
+						mesh.material.needsUpdate = true;
+						*/
+						//mesh.material = new THREE.MeshBasicMaterial({map: textureEquirec})
 						break
 					case "iPhoneLogoBack":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "MuteSwitch","PowerButton":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "Screen": //schermo ( si trova sotto il vetro "FrontGlass")
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "Screw": //non ho capito che roba è (è piccola e inutile trascurare)		N.B. screw = viti
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "SimSlot":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "Text : Assembled in China", "Text: Designed By Apple in California":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 					case "VolumeButtons":
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
 				}
 
 			});
 
-			this.scene.add(model)
-		},() => {})
+			this.scene.add(model);
+		},() => {});
 	}
 
 	/*
