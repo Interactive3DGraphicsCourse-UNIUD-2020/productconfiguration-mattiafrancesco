@@ -4,8 +4,12 @@ import * as Utils from './utils.js';
 
 import {Group} from './Group.js';
 
+import {Shader} from './Shader.js';
+
 import {GUI} from './GUI.js'
+
 import * as Model from  './Model.js'
+
 var ANIMATION_DURATION = 4000*4;		//in milliseconds
 
 class World
@@ -44,28 +48,29 @@ class World
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
 					case "BackCameraP1": //bordo nero attorno alle fotocamere, non copre le fotocamere (ha un buco dove sono le fotocamere)
+					/*
+						var blackMetallicUniforms = {
+							cspec:	{ type: "v3", value: new THREE.Vector3(0.9,0.9,0.9) },
+							roughness: {type: "f", value: 0.5},
+							pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+							clight:	{ type: "v3", value: new THREE.Vector3(
+								0 ,
+							0 ,
+								0 ) },
+						};
 
-						// var blackMetallicUniforms = {
-						// 	cspec:	{ type: "v3", value: new THREE.Vector3(0.9,0.9,0.9) },
-						// 	roughness: {type: "f", value: 0.5},
-						// 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
-						// 	clight:	{ type: "v3", value: new THREE.Vector3(
-						// 		0 ,
-						// 	0 ,
-						// 		0 ) },
-						// };
-
-						// vs = document.getElementById("vertex").textContent;
-						// fs = document.getElementById("fragment").textContent;
+						vs = new Shader("shad_vert.glsl").getData();
+						fs = new Shader("shad_frag.glsl").getData();
 		
-						// var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16),new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-						// lightMesh.position.set( 7.0, 7.0, 7.0 );
-						// uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,lightMesh.position.y,lightMesh.position.z);
+						var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16),new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+						lightMesh.position.set( 7.0, 7.0, 7.0 );
+						blackMetallicUniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,lightMesh.position.y,lightMesh.position.z);
 		
-						// ourMaterial = new THREE.ShaderMaterial({ uniforms: blackMetallicUniforms, vertexShader: vs, fragmentShader: fs });
-						// mesh.material = ourMaterial
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
-						break
+						ourMaterial = new THREE.ShaderMaterial({ uniforms: blackMetallicUniforms, vertexShader: vs, fragmentShader: fs });
+						mesh.material = ourMaterial
+					*/
+						
+					break
 					case "BackCamerasCover001": //si posiziona sopra le fotocamere LE COPRE
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
@@ -93,14 +98,21 @@ class World
 					case "FlashBG","FlashLED": //elementi che compongono il flash (elemento quadrato in mezzo alle due fotocamere dietro)
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
-					case "Front": //corpo davanti ce circonda lo schermo
+					case "Front": //corpo davanti che circonda lo schermo
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
 					case "FrontCamera": //camera frontale
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
 					case "FrontGlass": //vetro dello schermo schermo
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						//mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						var vs = new Shader("tmp_vert.glsl").getData();
+						var fs = new Shader("tmp_frag.glsl").getData();
+
+						console.log(vs, fs);
+
+						mesh.material = new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs });
+						mesh.material.needsUpdate = true;
 						break
 					case "iPhoneLogoBack":
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
