@@ -15,7 +15,7 @@ class World
 		this.scene = new THREE.Scene();
 
 		this.camera = new THREE.PerspectiveCamera(75, Utils.getRatio(), 0.1, 1000);	
-		this.camera.position.set(0, 0, 25);
+		this.camera.position.set(0, 0, 10);
 
 		/*
 		//GUI
@@ -25,6 +25,11 @@ class World
 		this.startTime = Date.now();
 		*/
 		let object = Model.load('./model/scene.gltf',10, (model) => {
+
+
+			model.rotateX(90 * Math.PI / 180)
+			model.translateZ(-10)
+			model.translateY(-2)
 
 			var meshes = model.children[0].children[0] // array di mesh
 			meshes.children.forEach(obj => {
