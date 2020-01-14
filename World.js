@@ -28,6 +28,22 @@ class World
 		//Animations
 		this.startTime = Date.now();
 		*/
+
+		var loader = new THREE.CubeTextureLoader();
+		let cityPath = 'textures/env/city/'
+		let bridgePath = 'textures/env/Bridge2'
+		loader.setPath( cityPath );
+
+		var textureCube = loader.load( [
+			'posx.jpg', 'negx.jpg',
+			'posy.jpg', 'negy.jpg',
+			'posz.jpg', 'negz.jpg'
+		] );
+
+
+		this.scene.background = textureCube;
+		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
+
 		let object = Model.load('./model/scene.gltf',10, (model) => {
 
 
@@ -83,8 +99,25 @@ class World
 					case "BackGlass": //vetro dietro iphone
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 						break
-					case "Body": //tutto il bordo latere del telefono
-						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
+					case "Body": //tutto il bordo latere del telefono	
+
+					var materialExtensions = {
+						derivatives: true, // set to use derivatives
+						shaderTextureLOD: true // set to use shader texture LOD
+					};
+
+					var uniforms = {
+							cspec:	{ type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
+							envMap:	{ type: "t", value: textureCube},
+							roughness: { type: "f", value: 0.2},
+						};
+	
+					var vs = new Shader("tmp_vert.glsl").getData();
+					var fs = new Shader("tmp_frag.glsl").getData();
+
+					mesh.material = new THREE.ShaderMaterial({uniforms: uniforms, vertexShader: vs, fragmentShader: fs ,extensions: materialExtensions });
+					mesh.material.needsUpdate = true;
+
 						break
 					case "CameraBump": //la parte in rilievo che contiene le fotocamere dietro
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor});
@@ -107,13 +140,13 @@ class World
 					case "FrontGlass": //vetro dello schermo schermo
 						//mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						
-						var vs = new Shader("tmp_vert.glsl").getData();
-						var fs = new Shader("tmp_frag.glsl").getData();
+						// var vs = new Shader("tmp_vert.glsl").getData();
+						// var fs = new Shader("tmp_frag.glsl").getData();
 
-						console.log(vs, fs);
+						// console.log(vs, fs);
 
-						mesh.material = new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs });
-						mesh.material.needsUpdate = true;
+						// mesh.material = new THREE.ShaderMaterial({ vertexShader: vs, fragmentShader: fs });
+						// mesh.material.needsUpdate = true;
 						
 						//var textureLoader = new THREE.TextureLoader();
 
