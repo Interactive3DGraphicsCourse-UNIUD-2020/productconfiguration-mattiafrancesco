@@ -24,17 +24,7 @@ class World
 		//Animations
 		this.startTime = Date.now();
 		*/
-		var object = Model.load('./model/scene.gltf',10,(model) => {
-
-			// model.traverse(function(child)
-			// {
-			// 	if(child.isMesh)
-			// 	{
-			// 		var random = Math.random()
-			// 		var color = 0XFFFFFF * random
-			// 		child.material = new THREE.MeshBasicMaterial({color: color})
-			// 	}
-			// });
+		let object = Model.load('./model/scene.gltf',10, (model) => {
 
 			var meshes = model.children[0].children[0] // array di mesh
 			meshes.children.forEach(obj => {
@@ -50,27 +40,27 @@ class World
 						break
 					case "BackCameraP1": //bordo nero attorno alle fotocamere, non copre le fotocamere (ha un buco dove sono le fotocamere)
 
-						var blackMetallicUniforms = {
-							cspec:	{ type: "v3", value: new THREE.Vector3(0.9,0.9,0.9) },
-							roughness: {type: "f", value: 0.5},
-							pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
-							clight:	{ type: "v3", value: new THREE.Vector3(
-								0 ,
-							0 ,
-								0 ) },
-						};
+						// var blackMetallicUniforms = {
+						// 	cspec:	{ type: "v3", value: new THREE.Vector3(0.9,0.9,0.9) },
+						// 	roughness: {type: "f", value: 0.5},
+						// 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3() },
+						// 	clight:	{ type: "v3", value: new THREE.Vector3(
+						// 		0 ,
+						// 	0 ,
+						// 		0 ) },
+						// };
 
-						vs = document.getElementById("vertex").textContent;
-						fs = document.getElementById("fragment").textContent;
+						// vs = document.getElementById("vertex").textContent;
+						// fs = document.getElementById("fragment").textContent;
 		
-						var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16),new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
-						lightMesh.position.set( 7.0, 7.0, 7.0 );
-						uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,lightMesh.position.y,lightMesh.position.z);
+						// var lightMesh = new THREE.Mesh( new THREE.SphereGeometry( 1, 16, 16),new THREE.MeshBasicMaterial ({color: 0xffff00, wireframe:true}));
+						// lightMesh.position.set( 7.0, 7.0, 7.0 );
+						// uniforms.pointLightPosition.value = new THREE.Vector3(lightMesh.position.x,lightMesh.position.y,lightMesh.position.z);
 		
-						ourMaterial = new THREE.ShaderMaterial({ uniforms: blackMetallicUniforms, vertexShader: vs, fragmentShader: fs });
-						mesh.material = ourMaterial
-						
-					break
+						// ourMaterial = new THREE.ShaderMaterial({ uniforms: blackMetallicUniforms, vertexShader: vs, fragmentShader: fs });
+						// mesh.material = ourMaterial
+						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
+						break
 					case "BackCamerasCover001": //si posiziona sopra le fotocamere LE COPRE
 						mesh.material = new THREE.MeshBasicMaterial({color: testColor})
 						break
