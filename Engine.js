@@ -56,6 +56,7 @@ class Engine
 
 		//Menu
 		this.gui = new GUI(htmlContainerID);
+		//this.gui.menu.add("tmp", () => { this.world. });
 		
 
 		//Controls

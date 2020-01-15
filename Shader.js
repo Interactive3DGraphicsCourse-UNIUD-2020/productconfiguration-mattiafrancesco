@@ -1,11 +1,17 @@
-import * as THREE from './build/three.module.js';
-
 var shaderDir = "./shaders/"
 
 class Shader
 {
 	constructor(path)
 	{
+		this.vs = this.load(path+"_vert.glsl");
+		this.fs = this.load(path+"_frag.glsl");
+	}
+
+	load(path)
+	{
+		var ret;
+
 		$.ajax({
 			url: shaderDir+path,
 			type: "GET",
@@ -13,13 +19,20 @@ class Shader
 			contentType: "plain/text"
 		}).done((data) =>
 		{
-			this.data = data;
+			ret = data;
 		});
+
+		return ret;
 	}
 
-	getData()
+	getVertex()
 	{
-		return this.data;
+		return this.vs;
+	}
+
+	getFragment()
+	{
+		return this.fs;
 	}
 }
 
