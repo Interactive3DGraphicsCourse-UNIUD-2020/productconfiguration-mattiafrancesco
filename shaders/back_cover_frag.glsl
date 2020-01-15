@@ -1,10 +1,17 @@
 varying vec3 vNormal;
 varying vec3 vPosition;
+varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 clight;
-uniform vec3 cspec;
-uniform float roughness;
+uniform sampler2D specularMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D roughnessMap;
+uniform vec2 textureRepeat;
 const float PI = 3.14159;
+
+vec3 cdiff;
+vec3 cspec;
+float roughness;
 
 vec3 FSchlick(float lDoth) {
 	return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
@@ -28,23 +35,28 @@ float GSmith(float nDotv, float nDotl) {
 void main() {
 	vec4 lPosition = viewMatrix * vec4( pointLightPosition, 1.0 );
 	vec3 l = normalize(lPosition.xyz - vPosition.xyz);
-	vec3 n = normalize( vNormal );  				// interpolation destroys normalization, so we have to normalize
-	vec3 v = normalize( -vPosition);				//v -> vettore che va verso la camera: camera - posizioneV (siamo in view space, la camera è nella posizione di origine (0,0,0) quindi basta negare v)
+	vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+	vec3 v = normalize( -vPosition);
 	vec3 h = normalize( v + l);
 	// small quantity to prevent divisions by 0
-	float nDotl = max(dot( n, l ),0.000001);  		//non posso prendere 0 perche sono valori che vanno al denominatore
+	float nDotl = max(dot( n, l ),0.000001);
 	float lDoth = max(dot( l, h ),0.000001);
 	float nDoth = max(dot( n, h ),0.000001);
 	float vDoth = max(dot( v, h ),0.000001);
 	float nDotv = max(dot( n, v ),0.000001);
 
-	//BRDF speculare
-	vec3 specularBRDF = FSchlick(lDoth)*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
-										(4.0*nDotl*nDotv);
+	cdiff = texture2D( diffuseMap, vec2(1,1)*textureRepeat ).rgb;
+	// texture in sRGB, linearize
+	cdiff = pow( cdiff, vec3(2.2));
+	cspec = texture2D( specularMap, vec2(1,1)*textureRepeat ).rgb;
+	// texture in sRGB, linearize
+	cspec = pow( cspec, vec3(2.2));
+	roughness = texture2D( roughnessMap, vec2(1,1)*textureRepeat).r; // no need to linearize roughness map
 
-	vec3 outRadiance = PI* clight * nDotl * specularBRDF;		//equazione di rendering
-
-	// gamma encode the final value, da spazio lineare a gamme encode
+	vec3 fresnel = FSchlick(lDoth);
+	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
+		(4.0*nDotl*nDotv);
+	vec3 outRadiance = PI* clight * nDotl * BRDF;
+	// gamma encode the final value
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
-	//gl_FragColor = vec4(outRadiance,1.0);
 }
