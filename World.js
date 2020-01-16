@@ -73,7 +73,7 @@ class World
 	}
 
 	loadTexture(file) {
-		var texture = this.loader.load( file , function ( texture ) {
+		var texture = new THREE.TextureLoader().load( file , function ( texture ) {
 
 			texture.minFilter = THREE.LinearMipMapLinearFilter;
 			// texture.anisotropy = renderer.getMaxAnisotropy();
@@ -117,7 +117,7 @@ class World
 		console.log(this.meshes, mesh);
 
 		//Load environment texture
-		var cityPath = 'textures/env/city/'
+		var cityPath = 'textures/env/city/';
 		//this.loader.setPath(cityPath);
 
 		var textureCube = this.loader.load([
@@ -152,7 +152,7 @@ class World
 		var mesh = this.meshes[MeshesNames.MESH_GLASS_BACK];
 
 		//Load maps
-		var pathTexturesBackCover = "./textures/Back_Cover/";
+		var pathTexturesBackCover = "textures/Back_Cover/";
 		var pathGoldTexture = "Gold/TexturesCom_Paint_GoldFake_1K";
 
 		var textureParameters = {
@@ -168,10 +168,10 @@ class World
 		console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
 		console.log(specularMap)
 		console.log(roughnessMap)
-
+		
 		var uniforms = {
-			specularMap: { type: "t", value: specularMap},
 			diffuseMap:	{ type: "t", value: diffuseMap},
+			specularMap: { type: "t", value: specularMap},
 			roughnessMap:	{ type: "t", value: roughnessMap},
 			pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, 7.0 ) },
 			clight:	{ type: "v3", value: new THREE.Vector3(100,100,100) },
