@@ -154,9 +154,10 @@ class World
 		//Load maps
 		var pathTexturesBackCover = "textures/Back_Cover/";
 		var pathGoldTexture = "Gold/TexturesCom_Paint_GoldFake_1K";
+		var pathCarbonTexture = "Carbon/TexturesCom_Plastic_CarbonFiber_1K"
 
 		var textureParameters = {
-			material: pathGoldTexture,
+			material: pathCarbonTexture,
 			repeatS: 1.0,
 			repeatT: 1.0,
 		}
