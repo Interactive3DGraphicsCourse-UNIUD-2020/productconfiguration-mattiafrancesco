@@ -1,0 +1,27 @@
+export var MESH_ANTENNAS = "AntennaLines"; //antenne attorno al telefono
+export var MESH_LOGO_APPLE = "AppleLogo";
+export var MESH_CAMERA_BACK = "BackCameraP1"; //bordo nero attorno alle fotocamere, non copre le fotocamere (ha un buco dove sono le fotocamere)
+export var MESH_CAMERA_BACK_COVER = "BackCamerasCover001"; //si posiziona sopra le fotocamere LE COPRE
+export var MESH_CAMERA_BACK_RING_BOTTOM = "BackCameraBottomGreyRing";
+export var MESH_CAMERA_BACK_RING_TOP = "BackCameraTopGreyRing"; //gli anelli neri delle fotocamere dietro
+export var MESH_CAMERA_BACK_LENS_BOTTOM = "BackCameraBottomLens";
+export var MESH_CAMERA_BACK_LENS_TOP = "BackCameraTopLens"; //lenti fotocamere dietro
+export var MESH_GLASS_BACK = "BackGlass"; //vetro dietro iphone
+export var MESH_BODY = "Body"; //tutto il bordo latere del telefono	
+export var MESH_CAMERA_BACK_BUMP = "CameraBump"; //la parte in rilievo che contiene le fotocamere dietro
+export var MESH_LOGO_CE = "CE"; //logo CE dietro
+export var MESH_EARPHONE_GRILL = "EarphoneGrill"; //griglia microfono davanti (sopra il notch)
+export var MESH_FLASH_BG = "FlashBG";
+export var MESH_FLASH_LED = "FlashLED"; //elementi che compongono il flash (elemento quadrato in mezzo alle due fotocamere dietro)
+export var MESH_FRONT = "Front"; //corpo davanti che circonda lo schermo
+export var MESH_CAMERA_FRONT = "FrontCamera"; //camera frontale
+export var MESH_GLASS_FRONT = "FrontGlass"; //vetro dello schermo schermo
+export var MESH_LOGO_IPHONE = "iPhoneLogoBack";
+export var MESH_SWITCH_MUTE = "MuteSwitch";
+export var MESH_BUTTON_POWER = "PowerButton";
+export var MESH_SCREEN = "Screen"; //schermo ( si trova sotto il vetro "FrontGlass")
+export var MESH_SCREW = "Screw"; //non ho capito che roba è (è piccola e inutile trascurare)		N.B. screw = viti
+export var MESH_SIM = "SimSlot";
+export var MESH_TEXT1 = "Text : Assembled in China";
+export var MESH_TEXT2 = "Text: Designed By Apple in California";
+export var MESH_BUTTONS_VOLUME = "VolumeButtons";
