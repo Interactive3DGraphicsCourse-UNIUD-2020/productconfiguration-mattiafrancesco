@@ -1,11 +1,14 @@
+uniform vec3 cspec;
+uniform samplerCube envMap;
+uniform float roughness;
+uniform float alpha;
+
 precision highp float;
 precision highp int;
 varying vec3 vNormal;
 varying vec3 vPosition;
 varying vec2 uVv;
-uniform vec3 cspec;
-uniform samplerCube envMap;
-uniform float roughness;
+
 
 const float PI = 3.14159;
 #define saturate(a) clamp( a, 0.0, 1.0 )
@@ -70,6 +73,6 @@ void main() {
 	envLight = pow( envLight, vec3(2.2));
 	vec3 outRadiance = envLight*BRDF_Specular_GGX_Environment(n, v, cspec, roughness);
 	// gamma encode the final value
-	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
+	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), alpha);
 	//gl_FragColor = vec4(r,1.0);
 }

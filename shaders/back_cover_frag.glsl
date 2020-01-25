@@ -1,12 +1,14 @@
-varying vec3 vNormal;
-varying vec3 vPosition;
-varying vec2 uVv;
 uniform vec3 pointLightPosition; // in world space
 uniform vec3 clight;
 uniform sampler2D specularMap;
 uniform sampler2D diffuseMap;
 uniform sampler2D roughnessMap;
 uniform vec2 textureRepeat;
+
+varying vec3 vNormal;
+varying vec3 vPosition;
+varying vec2 uVv;
+
 const float PI = 3.14159;
 
 vec3 cdiff;
