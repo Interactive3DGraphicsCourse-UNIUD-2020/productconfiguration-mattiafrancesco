@@ -52,7 +52,7 @@ class World
 		this.shaders = {}
 
 		//init
-		Model.load('./model/iphonetemp.gltf',10, (model) =>
+		Model.load('./model/scene.gltf',10, (model) =>
 		{
 			console.log(model)
 			try
