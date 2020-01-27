@@ -49,6 +49,8 @@ class World
 		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 		this.scene.background = textureCube;
 
+		this.shaders = {}
+
 		//init
 		Model.load('./model/scene.gltf',10, (model) =>
 		{
@@ -179,8 +181,8 @@ class World
 
 		var shader = new Shader("envLightReflect");
 
-		var params = new ShaderParams(shader, uniforms);
-		params.material.transparent = true
+		var params = new ShaderParams(shader, uniforms,true);
+		this.shaders[MeshesNames.MESH_GLASS_FRONT] = params
 		params.addMesh(frontGlass);
 	}
 
@@ -195,9 +197,14 @@ class World
 
 		var shader = new Shader("diffuseRef");
 
-		var params = new ShaderParams(shader, uniforms);
-		params.addMesh(meshVolume);
-		params.addMesh(meshPower);
+		var paramsForVolume = new ShaderParams(shader, uniforms);
+		var paramsForButton = new ShaderParams(shader, uniforms);
+
+		this.shaders[MeshesNames.MESH_BUTTONS_VOLUME] = paramsForVolume
+		this.shaders[MeshesNames.MESH_BUTTON_POWER] = paramsForButton
+
+		paramsForVolume.addMesh(meshVolume);
+		paramsForButton.addMesh(meshPower);
 	}
 
 	initGlossyMaterial()
@@ -252,6 +259,12 @@ class World
 		};
 		var params4 = new ShaderParams(shader, uniforms4, materialExtensions);
 		params4.addMesh(cameras_body);
+
+
+		this.shaders[MeshesNames.MESH_BODY] = params1
+		this.shaders[MeshesNames.MESH_ANTENNAS] = params2
+		this.shaders[MeshesNames.MESH_CAMERA_BACK_COVER] = params3
+		this.shaders[MeshesNames.MESH_CAMERA_BACK_BUMP] = params4
 	}
 
 	initBackGlass()
@@ -288,8 +301,9 @@ class World
 
 		//Setup shaders
 		var shader = new Shader("back_cover");
-
 		var params = new ShaderParams(shader, uniforms);
+		this.shaders[MeshesNames.MESH_GLASS_BACK] = params
+
 		params.addMesh(mesh);
 	}
 
