@@ -6,6 +6,7 @@ import {Group} from './Group.js';
 
 import {Shader} from './Shader.js';
 import {ShaderParams} from './ShaderParams.js';
+import * as ParamsNames from './ParamsNames.js';
 
 import * as MeshesNames from './MeshesNames.js';
 
@@ -15,8 +16,10 @@ import * as Model from  './Model.js'
 
 class World
 {
-	constructor()
+	constructor(anisotropy)
 	{
+		this.anisotropy = anisotropy;
+
 		//Setup scene
 		this.scene = new THREE.Scene();
 
@@ -49,7 +52,7 @@ class World
 		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 		this.scene.background = textureCube;
 
-		this.shaders = {}
+		this.shaderParams = {}
 
 		//init
 		Model.load('./model/scene.gltf',10, (model) =>
@@ -89,10 +92,10 @@ class World
 	}
 
 	loadTexture(file) {
-		var texture = new THREE.TextureLoader().load( file , function ( texture ) {
+		var texture = new THREE.TextureLoader().load( file , ( texture ) => {
 
 			texture.minFilter = THREE.LinearMipMapLinearFilter;
-			// texture.anisotropy = renderer.getMaxAnisotropy();
+			texture.anisotropy = this.anisotropy;
 			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 	  		texture.offset.set( 0, 0 );
 			texture.needsUpdate = true;
@@ -127,7 +130,8 @@ class World
 		this.initBackGlass();
 		this.initAppleLogo(); // ???????
 		this.initButtons(); 
-		this.initGlass()
+		this.initGlass();
+		this.initScreen();
 	}
 
 	initAppleLogo() {
@@ -172,24 +176,27 @@ class World
 	}
 
 	initGlass() {
-		var frontGlass = this.meshes[MeshesNames.MESH_GLASS_FRONT]
+		var frontGlass = this.meshes[MeshesNames.MESH_GLASS_FRONT];
+		//frontGlass.visible = false;
 
 		var uniforms = {
-			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
+			cspec:	{ type: "v3", value: new THREE.Vector3(1,1,1) },
 			envMap:	{ type: "t", value: this.textureCube},
-			alpha: { type: "f", value: 0.3}
+			alpha: { type: "f", value: 0.1}
 		};
 
 		var shader = new Shader("envLightReflect");
 
-		var params = new ShaderParams(shader, uniforms,true);
-		this.shaders[MeshesNames.MESH_GLASS_FRONT] = params
+		var params = new ShaderParams(shader, uniforms, {}, true);
 		params.addMesh(frontGlass);
+
+		this.shaderParams[ParamsNames.PARAMS_ENV] = params;
 	}
 
 	initButtons() {
-		var meshVolume = this.meshes[MeshesNames.MESH_BUTTONS_VOLUME]
-		var meshPower = this.meshes[MeshesNames.MESH_BUTTON_POWER]
+		var meshVolume = this.meshes[MeshesNames.MESH_BUTTONS_VOLUME];
+		var meshPower = this.meshes[MeshesNames.MESH_BUTTON_POWER];
+		var meshMute = this.meshes[MeshesNames.MESH_SWITCH_MUTE];
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
@@ -197,25 +204,25 @@ class World
 		};
 
 		var shader = new Shader("diffuseRef");
+		var params = new ShaderParams(shader, uniforms);
 
-		var paramsForVolume = new ShaderParams(shader, uniforms);
-		var paramsForButton = new ShaderParams(shader, uniforms);
+		params.addMesh(meshVolume);
+		params.addMesh(meshPower);
+		params.addMesh(meshMute);
 
-		this.shaders[MeshesNames.MESH_BUTTONS_VOLUME] = paramsForVolume
-		this.shaders[MeshesNames.MESH_BUTTON_POWER] = paramsForButton
-
-		paramsForVolume.addMesh(meshVolume);
-		paramsForButton.addMesh(meshPower);
+		this.shaderParams[ParamsNames.PARAMS_BUTTONS] = params;
 	}
 
 	initGlossyMaterial()
 	{
 		var body = this.meshes[MeshesNames.MESH_BODY];
-		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS]
-		var cameras_glass_up = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER]
-		var cameras_body = this.meshes[MeshesNames.MESH_CAMERA_BACK_BUMP]
+		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS];
+		var cameras_glass_up = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
+		var cameras_body = this.meshes[MeshesNames.MESH_CAMERA_BACK_BUMP];
 
 		//Setup shaders
+		var shader = new Shader("glossyRef");
+
 		var materialExtensions = {
 			derivatives: true, // set to use derivatives
 			shaderTextureLOD: true // set to use shader texture LOD
@@ -227,9 +234,6 @@ class World
 				roughness: { type: "f", value: 0.2},
 				alpha: {type: "f", value: 1}
 			};
-
-		var shader = new Shader("glossyRef");
-
 		var params1 = new ShaderParams(shader, uniforms1, materialExtensions);
 		params1.addMesh(body);
 
@@ -262,10 +266,10 @@ class World
 		params4.addMesh(cameras_body);
 
 
-		this.shaders[MeshesNames.MESH_BODY] = params1
-		this.shaders[MeshesNames.MESH_ANTENNAS] = params2
-		this.shaders[MeshesNames.MESH_CAMERA_BACK_COVER] = params3
-		this.shaders[MeshesNames.MESH_CAMERA_BACK_BUMP] = params4
+		this.shaderParams[ParamsNames.PARAMS_BODY] = params1;
+		this.shaderParams[ParamsNames.PARAMS_ANTENNAS] = params2;
+		this.shaderParams[ParamsNames.PARAMS_CAMERA_BACK_COVER] = params3;
+		this.shaderParams[ParamsNames.PARAMS_CAMERA_BACK_BUMP] = params4;
 	}
 
 	initBackGlass()
@@ -303,9 +307,30 @@ class World
 		//Setup shaders
 		var shader = new Shader("back_cover");
 		var params = new ShaderParams(shader, uniforms);
-		this.shaders[MeshesNames.MESH_GLASS_BACK] = params
-
 		params.addMesh(mesh);
+
+		this.shaderParams[ParamsNames.PARAMS_BACK_GLASS] = params;
+	}
+
+	initScreen()
+	{
+		var mesh = this.meshes[MeshesNames.MESH_SCREEN];
+
+		//Load maps
+		var diffuseMap = this.loadTexture("textures/screen/IMG_0308.PNG");
+				
+		var uniforms = {
+			diffuseMap:	{ type: "t", value: diffuseMap },
+			show: { type: "f", value: 1 },
+			brightness: { type: "f", value: 1 }
+		};
+
+		//Setup shaders
+		var shader = new Shader("screen");
+		var params = new ShaderParams(shader, uniforms);
+		params.addMesh(mesh);
+
+		this.shaderParams[ParamsNames.PARAMS_SCREEN] = params;
 	}
 
 	update()

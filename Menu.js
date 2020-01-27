@@ -26,13 +26,16 @@ class Menu
 			{
 				if(!menu.isVisible())
 				{
-					for(var subMenu of this.subMenus)
-						subMenu.hide();
+					this.hideSubMenus();
 
 					menu.show();
 				}
 				else
+				{
 					menu.hide();
+
+					menu.hideSubMenus();
+				}
 			});
 
 		this.subMenus.push(menu);
@@ -57,6 +60,15 @@ class Menu
 	{
 		//this.menu.show();
 		this.menu.slideDown(100);
+	}
+
+	hideSubMenus()
+	{
+		for(var subMenu of this.subMenus)
+		{
+			subMenu.hideSubMenus();
+			subMenu.hide();
+		}
 	}
 
 	isVisible()

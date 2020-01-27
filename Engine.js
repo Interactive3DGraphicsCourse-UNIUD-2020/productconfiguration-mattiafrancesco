@@ -11,8 +11,6 @@ class Engine
 {
 	constructor(htmlContainerID)
 	{
-		this.world = new World();
-
 		this.init(htmlContainerID);
 	}
 
@@ -27,6 +25,10 @@ class Engine
 		this.renderer.gammaOutput = true;
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+		//World
+		this.world = new World();
+		this.world.anisotropy = this.renderer.getMaxAnisotropy();
 
 		//Append canvas
 		var canvas = $(this.renderer.domElement);
@@ -55,7 +57,7 @@ class Engine
 
 
 		//Menu
-		this.gui = new GUI(htmlContainerID);
+		this.gui = new GUI(htmlContainerID, this.world.shaderParams);
 		//this.gui.menu.add("tmp", () => { this.world. });
 		
 
@@ -93,7 +95,7 @@ class Engine
 		this.world.update();
 		this.render();
 	}
-
+	
 	render()
 	{
 		this.renderer.render(this.world.scene, this.world.camera);
