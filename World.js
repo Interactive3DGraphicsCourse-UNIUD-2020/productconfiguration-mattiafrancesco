@@ -6,11 +6,9 @@ import {Group} from './Group.js';
 
 import {Shader} from './Shader.js';
 import {ShaderParams} from './ShaderParams.js';
-import * as ParamsNames from './ParamsNames.js';
-
-import * as MeshesNames from './MeshesNames.js';
-
-import {GUI} from './GUI.js'
+import * as ParamsNames from './References/ParamsNames.js';
+import * as TextureNames from './References/TextureNames.js';
+import * as MeshesNames from './References/MeshesNames.js';
 
 import * as Model from  './Model.js'
 
@@ -40,7 +38,7 @@ class World
 		*/
 
 		//Load environment texture
-		var cityPath = 'textures/env/city/';
+		var cityPath = TextureNames.CITY_PATH
 		//this.loader.setPath(cityPath);
 
 		var textureCube = new this.loader.load([
@@ -74,7 +72,7 @@ class World
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
 
-					var testColor = 0XFF0000;
+					var testColor = 0X000000;
 
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
@@ -129,7 +127,7 @@ class World
 		this.initGlossyMaterial();
 		this.initBackGlass();
 		this.initAppleLogo(); // ???????
-		this.initButtons(); 
+		this.initDiffuseMaterial(); 
 		this.initGlass();
 		this.initScreen();
 	}
@@ -191,6 +189,29 @@ class World
 		params.addMesh(frontGlass);
 
 		this.shaderParams[ParamsNames.PARAMS_ENV] = params;
+	}
+
+	initDiffuseMaterial() {
+		this.initButtons()
+		var meshFrontGrill = this.meshes[MeshesNames.MESH_EARPHONE_GRILL]
+
+		var uniforms = {
+			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
+			irradianceMap:	{ type: "t", value: this.textureCube},
+		};
+
+		var shader = new Shader("diffuseRef");
+		var params = new ShaderParams(shader, uniforms);
+
+		params.addMesh(meshFrontGrill);
+		this.shaderParams[ParamsNames.PARAMS_GRILL] = params;
+	}
+
+	//per forza color nero senza shader, il resto del bordo nero del telefono non è una mesh che possiamo modificare se 
+	//personalizzassimo questa mesh si vedrebbe la differenza
+	initFront() {
+		var meshFront = this.meshes[MeshesNames.MESH_FRONT]
+		meshFront.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
 	}
 
 	initButtons() {
@@ -277,19 +298,17 @@ class World
 		var mesh = this.meshes[MeshesNames.MESH_GLASS_BACK];
 
 		//Load maps
-		var pathTexturesBackCover = "textures/Back_Cover/";
-		var pathGoldTexture = "Gold/TexturesCom_Paint_GoldFake_1K";
-		var pathCarbonTexture = "Carbon/TexturesCom_Plastic_CarbonFiber_1K"
+		var pathGoldTexture = TextureNames.GOLD_TEXTURE_PATH
 
 		var textureParameters = {
-			material: pathCarbonTexture,
+			material: pathGoldTexture,
 			repeatS: 1.0,
 			repeatT: 1.0,
 		}
 
-		var diffuseMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_albedo.png");
-		var specularMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_metallic.png");
-		var roughnessMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_roughness.png");
+		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
+		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
+		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
 
 		// console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
 		// console.log(specularMap)
