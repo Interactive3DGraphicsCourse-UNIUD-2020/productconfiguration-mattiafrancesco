@@ -75,7 +75,9 @@ class World
 					console.log(mesh)
 
 					var testColor = 0X000000;
-					THREEUTILITY.THREE.BufferGeometryUtils.computeTangents(mesh.geometry);
+					var bufferGeometry = new THREE.BufferGeometry().fromGeometry(mesh.geometry);
+					THREEUTILITY.THREE.BufferGeometryUtils.computeTangents(bufferGeometry);
+					mesh.geometry = bufferGeometry;
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
