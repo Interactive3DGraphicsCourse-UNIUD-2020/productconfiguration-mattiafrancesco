@@ -4,6 +4,7 @@ uniform sampler2D specularMap;
 uniform sampler2D diffuseMap;
 uniform sampler2D roughnessMap;
 uniform vec2 textureRepeat;
+uniform bool neededTextures;
 
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -47,19 +48,18 @@ void main() {
 	float vDoth = max(dot( v, h ),0.000001);
 	float nDotv = max(dot( n, v ),0.000001);
 
-	cdiff = texture2D( diffuseMap, vUV*textureRepeat ).rgb;
-	// texture in sRGB, linearize
+	cdiff = texture2D( diffuseMap, vUV ).rgb;
 	cdiff = pow( cdiff, vec3(2.2));
-	cspec = texture2D( specularMap, vUV*textureRepeat ).rgb;
-	// texture in sRGB, linearize
+
+	cspec = texture2D( specularMap, vUV ).rgb;
 	cspec = pow( cspec, vec3(2.2));
-	roughness = texture2D( roughnessMap, vUV*textureRepeat).r; // no need to linearize roughness map
+
+	roughness = texture2D( roughnessMap, vUV).r; // no need to linearize roughness map
 
 	vec3 fresnel = FSchlick(lDoth);
-	vec3 BRDF = (vec3(1.0)-fresnel)*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/
-		(4.0*nDotl*nDotv);
+	vec3 BRDF = (vec3(1.0))*cdiff/PI + fresnel*GSmith(nDotv,nDotl)*DGGX(nDoth,roughness*roughness)/(4.0*nDotl*nDotv);
 	vec3 outRadiance = PI* clight * nDotl * BRDF;
 	// gamma encode the final value
-	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1.0);
-	gl_FragColor = vec4(texture2D( diffuseMap, vUV ).rgb, 1);
+	gl_FragColor = vec4(outRadiance/*pow( outRadiance, vec3(1.0/2.2))*/, 1.0);
+	//gl_FragColor = vec4(texture2D( diffuseMap, vUV ).rgb, 1);
 }

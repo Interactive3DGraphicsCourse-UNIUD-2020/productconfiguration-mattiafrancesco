@@ -87,6 +87,9 @@ class World
 				console.log(e);
 			}
 		 },() => {});
+
+		 console.log(this.scene);
+
 	}
 
 	loadTexture(file) {
@@ -309,17 +312,21 @@ class World
 		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
 		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
 		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
+		var normalMap = this.loadTexture(textureParameters.material + "_normal.png")
 
 		// console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
 		// console.log(specularMap)
 		// console.log(roughnessMap)
 		
+		var typeBackCover = TextureNames.TYPE_BACK_COVER.color 
+
 		var uniforms = {
+			neededTextures:{ type: "b", value: typeBackCover},
 			diffuseMap:	{ type: "t", value: diffuseMap},
 			specularMap: { type: "t", value: specularMap},
 			roughnessMap:	{ type: "t", value: roughnessMap},
-			pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, 7.0 ) },
-			clight:	{ type: "v3", value: new THREE.Vector3(100,100,100) },
+			pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, -20 ) },
+			clight:	{ type: "v3", value: new THREE.Vector3(1,1,1) },
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
 		};
 
