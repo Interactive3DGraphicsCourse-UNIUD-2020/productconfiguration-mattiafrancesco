@@ -36,6 +36,7 @@ class Engine
 
 		var htmlContainer = $("#"+htmlContainerID);
 		htmlContainer.append(canvas);
+		this.htmlContainer = htmlContainer;
 
 
 		//Handle resize
@@ -69,10 +70,7 @@ class Engine
 	
 	resize()
 	{
-		var windowWidth = window.innerWidth;
-		var windowHeight = window.innerHeight;
-
-		this.renderer.setSize(windowWidth, windowHeight);
+		this.renderer.setSize(this.htmlContainer.width(), this.htmlContainer.height());
 	}
 
 	start()
