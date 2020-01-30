@@ -63,24 +63,43 @@ class World
 			console.log(model)
 			try
 			{
-				model.rotateX(90 * Math.PI / 180);
-				model.translateZ(-10);
-				model.translateY(-2);
 
 				var meshes = model.children[0].children[0].children; // array di mesh
+
 				this.meshes = {};
 
 				console.log("Nomi delle mesh")
 				meshes.forEach(function(obj)
 				{
+
 					console.log(obj.name)
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
+
+					if(obj.name == MeshesNames.MESH_CAMERA_BACK) {
+						console.log("sono entrato")
+						console.log(obj)
+
+						obj.rotation.x = 0
+						obj.rotation.y = 0
+						obj.rotation.z = 0
+						obj.scale.x = 0.0000001
+
+					}
+
+					
 
 					var testColor = 0X000000;
 
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
+
+				console.log(model)
+
+
+				model.rotation.x = ( Math.PI / 180);
+				model.translateZ(-10);
+				model.translateY(-2);
 
 				this.initMeshes();
 
@@ -135,10 +154,11 @@ class World
 		this.initDiffuseMaterial(); 
 		this.initGlass();
 		this.initScreen();
+		this.initTest()
 	}
 
 	initAppleLogo() {
-		var iphone = this.meshes[MeshesNames.MESH_LOGO_IPHONE];
+		//var iphone = this.meshes[MeshesNames.MESH_LOGO_IPHONE];
 		var apple = this.meshes[MeshesNames.MESH_LOGO_APPLE];
 
 		var materialExtensions = {
@@ -162,50 +182,6 @@ class World
 
 		apple.material.side = THREE.DoubleSide;
 		apple.material.needsUpdate = true;
-
-
-		/*
-		mesh.translateX(-4)
-		mesh.material.side = THREE.DoubleSide;
-		mesh.material.needsUpdate = true;
-
-		mesh1.material.side = THREE.BackSide;
-		mesh1.material.needsUpdate = true;
-		*/
-
-		// //Load maps
-		// var pathTexturesBackCover = "textures/Back_Cover/";
-		// var pathGoldTexture = "Gold/TexturesCom_Paint_GoldFake_1K";
-		// var pathCarbonTexture = "Carbon/TexturesCom_Plastic_CarbonFiber_1K"
-
-		// var textureParameters = {
-		// 	material: pathCarbonTexture,
-		// 	repeatS: 1.0,
-		// 	repeatT: 1.0,
-		// }
-
-		// var diffuseMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_albedo.png");
-		// var specularMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_metallic.png");
-		// var roughnessMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_roughness.png");
-
-		// // console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
-		// // console.log(specularMap)
-		// // console.log(roughnessMap)
-		
-		// var uniforms = {
-		// 	diffuseMap:	{ type: "t", value: diffuseMap},
-		// 	specularMap: { type: "t", value: specularMap},
-		// 	roughnessMap:	{ type: "t", value: roughnessMap},
-		// 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, 7.0 ) },
-		// 	clight:	{ type: "v3", value: new THREE.Vector3(100,100,100) },
-		// 	textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
-		// };
-
-		// //Setup shaders
-		// var shader = new Shader("back_cover");
-
-		// var params = new ShaderParams(shader, uniforms);
-		// params.addMesh(mesh);
 	}
 
 	initGlass() {
@@ -266,6 +242,20 @@ class World
 		params.addMesh(meshMute);
 
 		this.shaderParams[ParamsNames.PARAMS_BUTTONS] = params;
+	}
+
+
+	initTest() {
+		var meshCameraBack = this.meshes[MeshesNames.MESH_CAMERA_BACK];
+		console.log("cover fotocamere dietro")
+		console.log(meshCameraBack)
+		meshCameraBack.material.side = THREE.DoubleSide;
+		meshCameraBack.material.needsUpdate = true;
+		meshCameraBack.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+
+		var t2 = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
+		console.log("t2")
+		console.log(t2)
 	}
 
 	initGlossyMaterial()
