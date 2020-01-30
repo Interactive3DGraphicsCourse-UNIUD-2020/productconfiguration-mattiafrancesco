@@ -79,7 +79,7 @@ class World
 
 				this.initMeshes();
 
-				
+
 				this.assignUVs(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				this.computeTangents(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
