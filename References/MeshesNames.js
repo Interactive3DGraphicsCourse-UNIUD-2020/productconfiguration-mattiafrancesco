@@ -21,7 +21,7 @@ export var MESH_SWITCH_MUTE = "MuteSwitch";
 export var MESH_BUTTON_POWER = "PowerButton";
 export var MESH_SCREEN = "Screen"; //schermo ( si trova sotto il vetro "FrontGlass")
 export var MESH_SCREW = "Screw"; //non ho capito che roba è (è piccola e inutile trascurare)		N.B. screw = viti
-export var MESH_SIM = "SimSlot";
+export var MESH_SIM_SLOT = "SimSlot";
 export var MESH_TEXT1 = "Text : Assembled in China";
 export var MESH_TEXT2 = "Text: Designed By Apple in California";
 export var MESH_BUTTONS_VOLUME = "VolumeButtons";

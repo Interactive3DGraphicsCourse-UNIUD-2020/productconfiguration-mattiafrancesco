@@ -58,9 +58,9 @@ class GUI
 		buttonsMenu.addItem("Green", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.GREEN); })
 		buttonsMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.BLUE); })
 
-		// var logoMenu = this.menu.addMenu("Logo");
-		// logoMenu.addItem("Smooth");
-		// logoMenu.addItem("Rough");
+		var logoMenu = this.menu.addMenu("Logo");
+		logoMenu.addItem("Smooth", () => { params[ParamsNames.PARAMS_LOGOS].set("roughness", 0.2);} );
+		logoMenu.addItem("Rough", () => { params[ParamsNames.PARAMS_LOGOS].set("roughness", 0.8);} );
 
 		var bodyMenu = this.menu.addMenu("Body");
 		bodyMenu.addItem("Red", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.RED); })

@@ -6,6 +6,7 @@ import {Group} from './Group.js';
 
 import {Shader} from './Shader.js';
 import {ShaderParams} from './ShaderParams.js';
+import * as Shaders from './References/ShadersNames.js';
 import * as ParamsNames from './References/ParamsNames.js';
 import * as TextureNames from './References/TextureNames.js';
 import * as MeshesNames from './References/MeshesNames.js';
@@ -49,6 +50,10 @@ class World
 
 		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 		this.scene.background = textureCube;
+
+		this.shaders = {};
+		for(var shaderName of Shaders.shadersNames)
+			this.shaders[shaderName] = new Shader(shaderName);
 
 		this.shaderParams = {}
 
@@ -133,10 +138,40 @@ class World
 	}
 
 	initAppleLogo() {
-		var mesh = this.meshes[MeshesNames.MESH_LOGO_IPHONE];
-		var mesh1 = this.meshes[MeshesNames.MESH_LOGO_APPLE];
-		mesh.translateZ(4)
-		mesh1.translateZ(4)
+		var iphone = this.meshes[MeshesNames.MESH_LOGO_IPHONE];
+		var apple = this.meshes[MeshesNames.MESH_LOGO_APPLE];
+
+		var materialExtensions = {
+			derivatives: true, // set to use derivatives
+			shaderTextureLOD: true // set to use shader texture LOD
+		};
+
+		var uniforms = {
+			cspec:	{ type: "v3", value: new THREE.Vector3(0.0) },
+			envMap:	{ type: "t", value: this.textureCube},
+			roughness: { type: "f", value: 0.2},
+			alpha: {type: "f", value: 1}
+		};
+
+		var shader = this.shaders[Shaders.SHADER_GLOSSY_REF];
+		var params = new ShaderParams(shader, uniforms, materialExtensions);
+
+		params.addMesh(apple);
+
+		this.shaderParams[ParamsNames.PARAMS_LOGOS] = params;
+
+		apple.material.side = THREE.DoubleSide;
+		apple.material.needsUpdate = true;
+
+
+		/*
+		mesh.translateX(-4)
+		mesh.material.side = THREE.DoubleSide;
+		mesh.material.needsUpdate = true;
+
+		mesh1.material.side = THREE.BackSide;
+		mesh1.material.needsUpdate = true;
+		*/
 
 		// //Load maps
 		// var pathTexturesBackCover = "textures/Back_Cover/";
@@ -183,8 +218,7 @@ class World
 			alpha: { type: "f", value: 0.1}
 		};
 
-		var shader = new Shader("envLightReflect");
-
+		var shader = this.shaders[Shaders.SHADER_ENV_LIGHT];
 		var params = new ShaderParams(shader, uniforms, {}, true);
 		params.addMesh(frontGlass);
 
@@ -200,7 +234,7 @@ class World
 			irradianceMap:	{ type: "t", value: this.textureCube},
 		};
 
-		var shader = new Shader("diffuseRef");
+		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
 		var params = new ShaderParams(shader, uniforms);
 
 		params.addMesh(meshFrontGrill);
@@ -224,7 +258,7 @@ class World
 			irradianceMap:	{ type: "t", value: this.textureCube},
 		};
 
-		var shader = new Shader("diffuseRef");
+		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
 		var params = new ShaderParams(shader, uniforms);
 
 		params.addMesh(meshVolume);
@@ -237,12 +271,13 @@ class World
 	initGlossyMaterial()
 	{
 		var body = this.meshes[MeshesNames.MESH_BODY];
+		var simSlot = this.meshes[MeshesNames.MESH_SIM_SLOT];
 		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS];
 		var cameras_glass_up = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
 		var cameras_body = this.meshes[MeshesNames.MESH_CAMERA_BACK_BUMP];
 
 		//Setup shaders
-		var shader = new Shader("glossyRef");
+		var shader = this.shaders[Shaders.SHADER_GLOSSY_REF];
 
 		var materialExtensions = {
 			derivatives: true, // set to use derivatives
@@ -265,6 +300,7 @@ class World
 			alpha: {type: "f", value: 1}
 		};
 		var params2 = new ShaderParams(shader, uniforms2, materialExtensions);
+		params2.addMesh(simSlot);
 		params2.addMesh(antennas);
 
 		var uniforms3 = {
@@ -324,7 +360,7 @@ class World
 		};
 
 		//Setup shaders
-		var shader = new Shader("back_cover");
+		var shader = this.shaders[Shaders.SHADER_BACK_COVER];
 		var params = new ShaderParams(shader, uniforms);
 		params.addMesh(mesh);
 
@@ -345,7 +381,7 @@ class World
 		};
 
 		//Setup shaders
-		var shader = new Shader("screen");
+		var shader = this.shaders[Shaders.SHADER_SCREEN];
 		var params = new ShaderParams(shader, uniforms);
 		params.addMesh(mesh);
 
