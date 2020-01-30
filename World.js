@@ -1,4 +1,5 @@
 import * as THREE from './build/three.module.js';
+import * as THREEUTILITY from './build/BufferGeometryUtils.js';
 
 import * as Utils from './utils.js';
 
@@ -71,9 +72,10 @@ class World
 					console.log(obj.name)
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
+					console.log(mesh)
 
 					var testColor = 0X000000;
-
+					THREEUTILITY.THREE.BufferGeometryUtils.computeTangents(mesh.geometry);
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
