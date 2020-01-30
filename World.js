@@ -81,6 +81,7 @@ class World
 
 
 				this.assignUVs(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
+				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry);
 				this.computeTangents(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				this.modelGroup.add(model);
@@ -110,26 +111,29 @@ class World
 
 	assignUVs(geometry) {
 
-		geometry.faceVertexUvs = []
-		geometry.faceVertexUvs[0] = [];
+		var uvs = [];
+		var verticesAttr = geometry.getAttribute("position");
+		var vertices = verticesAttr.array;
 
-		geometry.faces.forEach(function(face) {
+		for(var i=0;i<verticesAttr.count;i++)
+		{
+			/*
+			verticesAttr.count = vertices.length/3 => i = face index
+			we need just x and y so we take the first (i.e. [0]) and the second (i.e. [1]) items of each face
+			*/
+			var x = vertices[i*3+0];
+			var y = vertices[i*3+1];
 
-			var components = ['x', 'y', 'z'].sort(function(a, b) {
-				return Math.abs(face.normal[a]) > Math.abs(face.normal[b]);
-			});
+			//Here we scale the position making the uvs large as the width of the iPhone, then we add an offset to center the texture
+			x = x * 1.0/5.0 + 1.0/2.0;
+			y = y * 1.0/5.0 + 1.0/2.0;
+			//In the y coordinate we can put 1.0/8.0 in place of 1.0/5.0 to streetch the texture and making it fit the back. With 1.0/5.0 we keep the texture ratio.
 
-			var v1 = geometry.vertices[face.a];
-			var v2 = geometry.vertices[face.b];
-			var v3 = geometry.vertices[face.c];
+			uvs.push(x, y);
+		}
 
-			geometry.faceVertexUvs[0].push([
-				new THREE.Vector2(v1[components[0]], v1[components[1]]),
-				new THREE.Vector2(v2[components[0]], v2[components[1]]),
-				new THREE.Vector2(v3[components[0]], v3[components[1]])
-			]);
+		geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
 
-		});
 		geometry.uvsNeedUpdate = true;
 	}
 
