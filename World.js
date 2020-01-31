@@ -46,16 +46,14 @@ class World
 		cityPath+'posy.jpg', cityPath+'negy.jpg',
 		cityPath+'posz.jpg', cityPath+'negz.jpg'
 		]);
-
 		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 		this.scene.background = textureCube;
 
 		this.shaderParams = {}
-
+		this.shaderParams[ParamsNames.ENV_MAP] = textureCube
 		//init
 		Model.load('./model/scene.gltf',10, (model) =>
 		{
-			console.log(model)
 			try
 			{
 				model.rotateX(90 * Math.PI / 180);
@@ -65,22 +63,17 @@ class World
 				var meshes = model.children[0].children[0].children; // array di mesh
 				this.meshes = {};
 
-				console.log("Nomi delle mesh")
-				meshes.forEach(function(obj)
+				meshes.forEach( function(obj)
 				{
-					console.log(obj.name)
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
-					console.log(mesh)
 
 					var testColor = 0X000000;
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
 				this.assignUVs(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
-				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry);
 				this.computeTangents(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
-				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				this.modelGroup.add(model);
 
 				this.initMeshes();
@@ -387,12 +380,14 @@ class World
 	}
 
 	initGlass() {
+		console.log("env map")
+		console.log(this.textureCube)
 		var frontGlass = this.meshes[MeshesNames.MESH_GLASS_FRONT];
 		//frontGlass.visible = false;
 
 		var uniforms = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(1,1,1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			alpha: { type: "f", value: 0.1}
 		};
 
@@ -410,7 +405,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			irradianceMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 		};
 
 		var shader = new Shader("diffuseRef");
@@ -434,7 +429,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			irradianceMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 		};
 
 		var shader = new Shader("diffuseRef");
@@ -449,6 +444,9 @@ class World
 
 	initGlossyMaterial()
 	{
+		console.log("env map")
+		console.log(this.textureCube)
+
 		var body = this.meshes[MeshesNames.MESH_BODY];
 		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS];
 		var cameras_glass_up = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
@@ -464,7 +462,7 @@ class World
 
 		var uniforms1 = {
 				cspec:	{ type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
-				envMap:	{ type: "t", value: this.textureCube},
+				envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 				roughness: { type: "f", value: 0.2},
 				alpha: {type: "f", value: 1}
 			};
@@ -473,7 +471,7 @@ class World
 
 		var uniforms2 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -482,7 +480,7 @@ class World
 
 		var uniforms3 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 0.4}
 		};
@@ -492,7 +490,7 @@ class World
 
 		var uniforms4 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -526,8 +524,11 @@ class World
 		
 		var typeBackCover = TextureNames.TYPE_BACK_COVER.color 
 
+		console.log("env map")
+		console.log(this.textureCube)
+
 		var uniforms = {
-			envMap: { type: "t", value: this.textureCube},
+			envMap: { type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			normalMap: { type: "t", value: normalMap},
 			neededTextures:{ type: "b", value: typeBackCover},
 			diffuseMap: { type: "t", value: diffuseMap},

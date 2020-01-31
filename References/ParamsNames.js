@@ -7,3 +7,4 @@ export var PARAMS_CAMERA_BACK_BUMP = "back_bump";
 export var PARAMS_BACK_GLASS = "back_glass";
 export var PARAMS_SCREEN = "screen";
 export var PARAMS_GRILL = "grill"
+export var ENV_MAP = "envMap"
