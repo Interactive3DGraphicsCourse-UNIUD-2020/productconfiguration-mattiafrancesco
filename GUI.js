@@ -55,29 +55,50 @@ class GUI
 
 
 		var antennasMenu = this.menu.addMenu("Antennas");
+		antennasMenu.addItem("Black", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.BLACK); });
 		antennasMenu.addItem("Red", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.RED); });
+		antennasMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.YELLOW); });
+		antennasMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.SILVER); });
 		antennasMenu.addItem("Green", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.GREEN); });
 		antennasMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.BLUE); });
+		antennasMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.VIOLET); });
 
 		var buttonsMenu = this.menu.addMenu("Buttons")
+		buttonsMenu.addItem("Black", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.BLACK); })
 		buttonsMenu.addItem("Red", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.RED); })
+		buttonsMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff",ColorNames.YELLOW); });
+		buttonsMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.SILVER); })
 		buttonsMenu.addItem("Green", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.GREEN); })
 		buttonsMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.BLUE); })
+		buttonsMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.VIOLET); })
+
 
 		var logoMenu = this.menu.addMenu("Logo");
 		logoMenu.addItem("Smooth", () => { params[ParamsNames.PARAMS_LOGOS].set("roughness", 0.2);} );
 		logoMenu.addItem("Rough", () => { params[ParamsNames.PARAMS_LOGOS].set("roughness", 0.8);} );
 
 		var bodyMenu = this.menu.addMenu("Body");
+		bodyMenu.addItem("Black", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.BLACK); })
 		bodyMenu.addItem("Red", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.RED); })
 		bodyMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.YELLOW); });
 		bodyMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.SILVER); });
-		bodyMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.VIOLET); });
+		bodyMenu.addItem("Green", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.GREEN); });
+		bodyMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_BODY].set("cspec", ColorNames.BLUE); })
+		bodyMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.VIOLET); });		
+
 
 		var coverMenu = this.menu.addMenu("Cover");
-		coverMenu.addItem("Gold", () => { this.loadNewTexture(TextureNames.GOLD_TEXTURE_PATH,params) })
-		coverMenu.addItem("Carbon", () => { this.loadNewTexture(TextureNames.CARBON_TEXTURE_PATH,params) });
-		coverMenu.addItem("Copper", () => { this.loadNewTexture(TextureNames.COPPER_TEXTURE_PATH,params) });
+		coverMenu.addItem("Black", () => { this.setNewColor(ColorNames.BLACK,params) })
+		coverMenu.addItem("Red", () => { this.setNewColor(ColorNames.RED,params) })
+		coverMenu.addItem("Yellow", () => { this.setNewColor(ColorNames.YELLOW,params) })
+		coverMenu.addItem("Silver", () => { this.setNewColor(ColorNames.SILVER,params) })
+		coverMenu.addItem("Blue", () => { this.setNewColor(ColorNames.BLUE,params) })
+		coverMenu.addItem("Violet", () => { this.setNewColor(ColorNames.VIOLET,params) });
+
+		coverMenu.addItem("Gold", () => { this.setNewTexture(TextureNames.GOLD_TEXTURE_PATH,params) })
+		coverMenu.addItem("Carbon", () => { this.setNewTexture(TextureNames.CARBON_TEXTURE_PATH,params) });
+		coverMenu.addItem("MetalGreen", () => { this.setNewTexture(TextureNames.METALGREEN_TEXTURE_PATH,params) });
+		coverMenu.addItem("Sci-Fi", () => { this.setNewTexture(TextureNames.SCIFI_TEXTURE_PATH,params) });
 
 		var screenMenu = this.menu.addMenu("Screen");
 		screenMenu.addItem("On", () => { params[ParamsNames.PARAMS_SCREEN].set("show", 1); });
@@ -96,13 +117,19 @@ class GUI
 		})
 	}
 
-	loadNewTexture(pathTexture,params){
-		
+	setNewTexture(pathTexture,params){
+		params[ParamsNames.PARAMS_BACK_GLASS].set("neededTextures", TextureNames.TYPE_BACK_COVER.texture)
 		params[ParamsNames.PARAMS_BACK_GLASS].set("normalMap", params[pathTexture][ParamsNames.NORMAL_MAP])
 		params[ParamsNames.PARAMS_BACK_GLASS].set("specularMap", params[pathTexture][ParamsNames.SPECULAR_MAP])
 		params[ParamsNames.PARAMS_BACK_GLASS].set("roughnessMap", params[pathTexture][ParamsNames.ROUGH_MAP])
-		params[ParamsNames.PARAMS_BACK_GLASS].set("diffuseMap", params[pathTexture][ParamsNames.DIFFUSE_MAP])
 	}
+
+	setNewColor(color,params) {
+		params[ParamsNames.PARAMS_BACK_GLASS].set("neededTextures", TextureNames.TYPE_BACK_COVER.color)
+		params[ParamsNames.PARAMS_BACK_GLASS].set("cspecColor",color)
+	}
+
+
 }
 
 export {GUI};
