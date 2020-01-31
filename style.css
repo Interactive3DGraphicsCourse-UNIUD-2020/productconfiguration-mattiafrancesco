@@ -1,3 +1,156 @@
+/*--------------------------------------------index--------------------------------------------*/
+body
+{
+	margin: 0px;
+	z-index: 0;
+}
+
+header
+{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	background: #314570;
+	display: flex;
+	align-items: center;
+}
+
+header img
+{
+	margin: 15px;
+	margin-right: 0px;
+	height: 60px;
+	width: 110px;
+}
+
+header input
+{
+	flex-grow: 1;
+	margin: 20px;
+	line-height: 1.5em;
+	font-size: 20px;
+	border-radius: 10px;
+	border: 2px solid #AED1D6;
+}
+
+nav
+{
+	position: fixed;
+	top: 90px;
+	left: 0px;
+	right: 0px;
+	height: 35px;
+	display: flex;
+	border-bottom: 1px solid #000000;
+	background: #7584AD;
+	color: #FFFFFF;
+}
+
+nav div
+{
+	display: inline-block;
+	width: 50px;
+	border-right: 1px solid #000000;
+}
+
+nav a
+{
+	display: inline-block;
+	width: 200px;
+	line-height: 38px;
+	cursor: pointer;
+	text-align: center;
+	border-right: 1px solid #000000;
+	font-size: 18px;
+}
+
+main
+{
+
+}
+
+aside
+{
+	position: fixed;
+	top: 126px;
+	bottom: 0px;
+	left: 0px;
+	width: 300px;
+	background: #EEEEEE;
+	border-right: 1px solid #000000;
+}
+
+section
+{
+	margin: 126px 0px 0px 300px;
+}
+
+article
+{
+	display: inline-block;
+	margin: 20px;
+	margin-right: 0px;
+	height: 300px;
+	width: 300px;
+	background: #EEEEEE;
+	border: 1px solid #999999;
+	border-radius: 15px;
+	text-align: center;
+}
+
+article img
+{
+	margin: 15px;
+	height: 200px;
+}
+
+article .title
+{
+	height: 25px;
+	line-height: 25px;
+	margin-bottom: 5px;
+}
+
+article .price
+{
+	height: 25px;
+	line-height: 25px;
+	margin-bottom: 5px;
+	font-size: 18px;
+	font-weight: bold;
+	color: #CC0000;
+}
+
+footer
+{
+
+}
+
+/*---------------------------------------productDetails----------------------------------------*/
+#productDetails
+{
+	position: fixed;
+	top: 5%;
+	bottom: 5%;
+	left: 5%;
+	right: 5%;
+	overflow-y: scroll;
+	z-index: 1;
+	background: #FFFFFF;
+	border: 2px solid #000000;
+	display: none;
+}
+
+
+/*-------------------------------------productConfigurator-------------------------------------*/
+.productConfigurator
+{
+	width: 50%;
+	height: 50%;
+	position: relative;
+}
+
 .productConfiguratorCanvas
 {
 	width: 100%;

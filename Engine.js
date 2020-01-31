@@ -70,7 +70,13 @@ class Engine
 	
 	resize()
 	{
-		this.renderer.setSize(this.htmlContainer.width(), this.htmlContainer.height());
+		var w = this.htmlContainer.width();
+		var h = this.htmlContainer.height();
+
+		this.renderer.setSize(w, h);
+
+		this.world.camera.aspect = w/h;
+		this.world.camera.updateProjectionMatrix();
 	}
 
 	start()

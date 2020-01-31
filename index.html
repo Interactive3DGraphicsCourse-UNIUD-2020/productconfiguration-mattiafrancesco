@@ -3,37 +3,41 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>ACME product configuration</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<style type="text/css">
-			body 
-			{
-				margin: 0px;
-			}
-
-			.productConfigurator
-			{
-				width: 50%;
-				height: 50%;
-			}
-		</style>
 	</head>
 
 	<body>
-		<div id="productConfigurator" class="productConfigurator"></div>
 		<script type="text/javascript" src="build/jquery.min.js"></script>
 		<script type="module">
-			import {Engine} from './Engine.js';
+			import {Products} from './products.js';
 
-			try
-			{
-				var engine = new Engine("productConfigurator");
+			var products = new Products();
 
-				engine.start();
-			}
-			catch(e)
+			$(document).ready(function()
 			{
-				alert(e);
-				console.log(e)
-			}
+				products.show();
+			});
 		</script>
+		<header>
+			<img src="logo.png" />
+			<input type="text" name="search" placeholder="Search item..." />
+		</header>
+		<nav>
+			<div></div>
+			<a>Phones</a>
+			<a>Tablets</a>
+			<a>Desktop</a>
+		</nav>
+		<main>
+			<aside>lorem ipsum</aside>
+			<section id="articles">
+			</section>
+		</main>
+		<footer></footer>
+
+		<div id="productDetails">
+			<div id="productConfigurator"></div>
+			<div id="title"></div>
+			<div id="desc"></div>
+		</div>
 	</body>
 </html>
