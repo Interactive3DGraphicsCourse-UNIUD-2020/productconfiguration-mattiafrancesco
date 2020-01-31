@@ -531,7 +531,7 @@ class World
 			envMap: { type: "t", value: this.textureCube},
 			normalMap: { type: "t", value: normalMap},
 			neededTextures:{ type: "b", value: typeBackCover},
-			diffuseMap:	{ type: "t", value: diffuseMap},
+			diffuseMap: { type: "t", value: diffuseMap},
 			specularMap: { type: "t", value: specularMap},
 			roughnessMap:	{ type: "t", value: roughnessMap},
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }

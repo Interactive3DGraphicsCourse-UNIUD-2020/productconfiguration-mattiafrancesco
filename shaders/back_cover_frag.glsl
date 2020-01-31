@@ -2,8 +2,8 @@ precision highp float;
 precision highp int;
 
 uniform samplerCube envMap;
-uniform sampler2D specularMap;
 uniform sampler2D diffuseMap;
+uniform sampler2D specularMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D normalMap;
 uniform vec2 textureRepeat;
@@ -17,10 +17,6 @@ varying vec3 vBitangent;
 
 const float PI = 3.14159;
 #define saturate(a) clamp( a, 0.0, 1.0 )
-
-vec3 cdiff;
-vec3 cspec;
-float roughness;
 
 vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
 	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
@@ -50,36 +46,55 @@ float GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {
 return ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );
 }
 
+vec3 FSchlick(float lDoth,vec3 cspec) {
+    return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
+}
+
+
 void main() {
+
+	//for normal
 	vec3 normal = normalize( vNormal );
 	vec3 tangent = normalize( vTangent );
 	vec3 bitangent = normalize( vBitangent );
 	mat3 vTBN = mat3( tangent, bitangent, normal );
-	vec3 mapN = texture2D( normalMap, vUV ).xyz * 2.0 - 1.0;
-	mapN.xy = vec2(1,1) * mapN.xy;
-
-	//vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+	vec3 mapN = texture2D( normalMap, vUV * textureRepeat).xyz * 2.0 - 1.0;
+	mapN.xy = textureRepeat * mapN.xy;
 	vec3 n = normalize( vTBN * mapN );
-	vec3 v = normalize( -vPosition);	
+    vec3 worldN = inverseTransformDirection( n, viewMatrix );
 
+	//other
+	//vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
+	vec3 v = normalize( -vPosition);	
 	vec3 vReflect = reflect(vPosition,n);
 	vec3 r = inverseTransformDirection( vReflect, viewMatrix );
+	float nDotv = max(dot( n, v ),0.000001);
 
-	cdiff = texture2D( diffuseMap, vUV ).rgb;
+	//read textures
+	vec3 cdiff = texture2D( diffuseMap, vUV * textureRepeat).rgb;
 	cdiff = pow( cdiff, vec3(2.2));
 
-	cspec = texture2D( specularMap, vUV ).rgb;
+	vec3 cspec = texture2D( specularMap, vUV * textureRepeat).rgb;
 	cspec = pow( cspec, vec3(2.2));
 
-	roughness = texture2D( roughnessMap, vUV).r;
+	float roughness = texture2D( roughnessMap, vUV * textureRepeat).r;
 
+	//Diffuse
+    vec3 irradiance = textureCube( envMap, worldN).rgb;
+    irradiance = pow( irradiance, vec3(2.2));
+    vec3 outRadianceDiffuse = cdiff*irradiance;
+
+	//Specular
 	float blinnShininessExponent = GGXRoughnessToBlinnExponent(roughness);
 	float specularMIPLevel = getSpecularMIPLevel(blinnShininessExponent ,11 );
-
 	vec3 envLight = textureCubeLodEXT( envMap, vec3(-r.x, r.yz), specularMIPLevel ).rgb;
 	envLight = pow( envLight, vec3(2.2));
+	vec3 outRadianceSpecular = envLight * BRDF_Specular_GGX_Environment(n, v, cspec, roughness);;
 
-	vec3 outRadiance = envLight*BRDF_Specular_GGX_Environment(n, v, cspec, roughness);
+	//Total
+	vec3 fresnel = FSchlick(nDotv,cspec);
+	vec3 outRadiance = ((vec3(1.0)-fresnel)*outRadianceDiffuse) + (fresnel*outRadianceSpecular);
+
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1);
 
 }
