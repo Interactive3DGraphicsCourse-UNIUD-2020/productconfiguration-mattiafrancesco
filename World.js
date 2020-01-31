@@ -56,7 +56,27 @@ class World
 
 		this.shaderParams = {}
 		this.shaderParams[ParamsNames.ENV_MAP] = textureCube
-		//init
+
+
+		//Texture cover
+		//Load maps
+		var self = this;
+		var texturesToLoad = [TextureNames.GOLD_TEXTURE_PATH,TextureNames.CARBON_TEXTURE_PATH,TextureNames.COPPER_TEXTURE_PATH]
+		texturesToLoad.forEach( function(texturePath) {
+			var diffuseMap = self.loadTexture(texturePath + "_albedo.png");
+			var specularMap = self.loadTexture(texturePath + "_metallic.png");
+			var roughnessMap = self.loadTexture(texturePath + "_roughness.png");
+			var normalMap = self.loadTexture(texturePath + "_normal.png")
+			self.shaderParams[texturePath] = []
+			self.shaderParams[texturePath][ParamsNames.NORMAL_MAP] = normalMap
+			self.shaderParams[texturePath][ParamsNames.ROUGH_MAP] = roughnessMap
+			self.shaderParams[texturePath][ParamsNames.SPECULAR_MAP] = specularMap
+			self.shaderParams[texturePath][ParamsNames.DIFFUSE_MAP] = diffuseMap
+		})
+
+		
+
+		//Mesh Model
 		Model.load('./model/scene.gltf',10, (model) =>
 		{
 			try
@@ -552,12 +572,6 @@ class World
 			repeatS: 1.0,
 			repeatT: 1.0,
 		}
-
-		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
-		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
-		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
-		var normalMap = this.loadTexture(textureParameters.material + "_normal.png")
-		
 		var typeBackCover = TextureNames.TYPE_BACK_COVER.color 
 
 		console.log("env map")
@@ -565,11 +579,11 @@ class World
 
 		var uniforms = {
 			envMap: { type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
-			normalMap: { type: "t", value: normalMap},
+			normalMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.NORMAL_MAP]},
 			neededTextures:{ type: "b", value: typeBackCover},
-			diffuseMap: { type: "t", value: diffuseMap},
-			specularMap: { type: "t", value: specularMap},
-			roughnessMap:	{ type: "t", value: roughnessMap},
+			diffuseMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.DIFFUSE_MAP]},
+			specularMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.SPECULAR_MAP]},
+			roughnessMap:	{ type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.ROUGH_MAP]},
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
 		};
 
