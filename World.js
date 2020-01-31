@@ -77,14 +77,13 @@ class World
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
-				this.initMeshes();
-
-
 				this.assignUVs(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry);
 				this.computeTangents(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				console.log(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				this.modelGroup.add(model);
+
+				this.initMeshes();
 			}
 			catch(e)
 			{
