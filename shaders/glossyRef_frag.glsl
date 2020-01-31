@@ -25,23 +25,6 @@ float GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {
 return ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );
 }
 
-// vec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {
-
-// 	vec3 q0 = dFdx( eye_pos.xyz );
-// 	vec3 q1 = dFdy( eye_pos.xyz );
-// 	vec2 st0 = dFdx( uVv.st );
-// 	vec2 st1 = dFdy( uVv.st );
-
-// 	vec3 S = normalize(  q0 * st1.t - q1 * st0.t );
-// 	vec3 T = normalize( -q0 * st1.s + q1 * st0.s );
-// 	vec3 N =  surf_norm ;
-
-// 	mapN.xy = normalScale * mapN.xy;
-// 	mat3 tsn = mat3( S, T, N );
-// 	return normalize( tsn * mapN );
-
-// }
-
 // http://en.wikibooks.org/wiki/GLSL_Programming/Applying_Matrix_Transformations
 vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
 	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
@@ -60,7 +43,7 @@ vec3 BRDF_Specular_GGX_Environment( vec3 normal, vec3 viewDir, const in vec3 csp
 }
 
 void main() {
-	vec3 n = normalize(vNormal);//perturbNormal2Arb( vPosition, normalize( vNormal ));
+	vec3 n = normalize(vNormal);
 	vec3 v = normalize( -vPosition);
 	vec3 vReflect = reflect(vPosition,n);
 	vec3 r = inverseTransformDirection( vReflect, viewMatrix );

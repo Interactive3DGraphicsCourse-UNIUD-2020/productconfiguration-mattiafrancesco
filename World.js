@@ -47,7 +47,6 @@ class World
 		cityPath+'posy.jpg', cityPath+'negy.jpg',
 		cityPath+'posz.jpg', cityPath+'negz.jpg'
 		]);
-
 		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 		this.scene.background = textureCube;
 
@@ -56,11 +55,10 @@ class World
 			this.shaders[shaderName] = new Shader(shaderName);
 
 		this.shaderParams = {}
-
+		this.shaderParams[ParamsNames.ENV_MAP] = textureCube
 		//init
 		Model.load('./model/scene.gltf',10, (model) =>
 		{
-			console.log(model)
 			try
 			{
 				model.rotateX(90 * Math.PI / 180);
@@ -70,21 +68,20 @@ class World
 				var meshes = model.children[0].children[0].children; // array di mesh
 				this.meshes = {};
 
-				console.log("Nomi delle mesh")
-				meshes.forEach(function(obj)
+				meshes.forEach( function(obj)
 				{
-					console.log(obj.name)
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
 
 					var testColor = 0X000000;
-
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
-				this.initMeshes();
-
+				this.assignUVs(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
+				this.computeTangents(this.meshes[MeshesNames.MESH_GLASS_BACK].geometry)
 				this.modelGroup.add(model);
+
+				this.initMeshes();
 			}
 			catch(e)
 			{
@@ -92,6 +89,7 @@ class World
 				console.log(e);
 			}
 		 },() => {});
+
 	}
 
 	loadTexture(file) {
@@ -106,6 +104,214 @@ class World
 			//document.appendChild(texture.image.attributes[1].ownerElement);
 		});// , () => {}, (e) => {alert(e); console.log(e);});
 		return texture;
+	}
+
+	assignUVs(geometry) {
+
+		var uvs = [];
+		var verticesAttr = geometry.getAttribute("position");
+		var vertices = verticesAttr.array;
+
+		for(var i=0;i<verticesAttr.count;i++)
+		{
+			/*
+			verticesAttr.count = vertices.length/3 => i = face index
+			we need just x and y so we take the first (i.e. [0]) and the second (i.e. [1]) items of each face
+			*/
+			var x = vertices[i*3+0];
+			var y = vertices[i*3+1];
+
+			//Here we scale the position making the uvs large as the width of the iPhone, then we add an offset to center the texture
+			x = x * 1.0/5.0 + 1.0/2.0;
+			y = y * 1.0/5.0 + 1.0/2.0;
+			//In the y coordinate we can put 1.0/8.0 in place of 1.0/5.0 to streetch the texture and making it fit the back. With 1.0/5.0 we keep the texture ratio.
+
+			uvs.push(x, y);
+		}
+
+		geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
+
+		geometry.uvsNeedUpdate = true;
+	}
+
+	computeTangents( geometry ) {
+
+		var index = geometry.index;
+		var attributes = geometry.attributes;
+
+		// based on http://www.terathon.com/code/tangent.html
+		// (per vertex tangents)
+
+		if ( index === null ||
+			 attributes.position === undefined ||
+			 attributes.normal === undefined ||
+			 attributes.uv === undefined ) {
+
+			console.warn( 'THREE.BufferGeometry: Missing required attributes (index, position, normal or uv) in BufferGeometry.computeTangents()' );
+			return;
+
+		}
+
+		var indices = index.array;
+		var positions = attributes.position.array;
+		var normals = attributes.normal.array;
+		var uvs = attributes.uv.array;
+
+		var nVertices = positions.length / 3;
+
+		if ( attributes.tangent === undefined ) {
+
+			geometry.addAttribute( 'tangent', new THREE.BufferAttribute( new Float32Array( 4 * nVertices ), 4 ) );
+
+		}
+
+		var tangents = attributes.tangent.array;
+
+		var tan1 = [], tan2 = [];
+
+		for ( var i = 0; i < nVertices; i ++ ) {
+
+			tan1[ i ] = new THREE.Vector3();
+			tan2[ i ] = new THREE.Vector3();
+
+		}
+
+		var vA = new THREE.Vector3(),
+			vB = new THREE.Vector3(),
+			vC = new THREE.Vector3(),
+
+			uvA = new THREE.Vector2(),
+			uvB = new THREE.Vector2(),
+			uvC = new THREE.Vector2(),
+
+			sdir = new THREE.Vector3(),
+			tdir = new THREE.Vector3();
+
+		function handleTriangle( a, b, c ) {
+
+			vA.fromArray( positions, a * 3 );
+			vB.fromArray( positions, b * 3 );
+			vC.fromArray( positions, c * 3 );
+
+			uvA.fromArray( uvs, a * 2 );
+			uvB.fromArray( uvs, b * 2 );
+			uvC.fromArray( uvs, c * 2 );
+
+			var x1 = vB.x - vA.x;
+			var x2 = vC.x - vA.x;
+
+			var y1 = vB.y - vA.y;
+			var y2 = vC.y - vA.y;
+
+			var z1 = vB.z - vA.z;
+			var z2 = vC.z - vA.z;
+
+			var s1 = uvB.x - uvA.x;
+			var s2 = uvC.x - uvA.x;
+
+			var t1 = uvB.y - uvA.y;
+			var t2 = uvC.y - uvA.y;
+
+			var r = 1.0 / ( s1 * t2 - s2 * t1 );
+
+			sdir.set(
+				( t2 * x1 - t1 * x2 ) * r,
+				( t2 * y1 - t1 * y2 ) * r,
+				( t2 * z1 - t1 * z2 ) * r
+			);
+
+			tdir.set(
+				( s1 * x2 - s2 * x1 ) * r,
+				( s1 * y2 - s2 * y1 ) * r,
+				( s1 * z2 - s2 * z1 ) * r
+			);
+
+			tan1[ a ].add( sdir );
+			tan1[ b ].add( sdir );
+			tan1[ c ].add( sdir );
+
+			tan2[ a ].add( tdir );
+			tan2[ b ].add( tdir );
+			tan2[ c ].add( tdir );
+
+		}
+
+		var groups = geometry.groups;
+
+		if ( groups.length === 0 ) {
+
+			groups = [ {
+				start: 0,
+				count: indices.length
+			} ];
+
+		}
+
+		for ( var i = 0, il = groups.length; i < il; ++ i ) {
+
+			var group = groups[ i ];
+
+			var start = group.start;
+			var count = group.count;
+
+			for ( var j = start, jl = start + count; j < jl; j += 3 ) {
+
+				handleTriangle(
+					indices[ j + 0 ],
+					indices[ j + 1 ],
+					indices[ j + 2 ]
+				);
+
+			}
+
+		}
+
+		var tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3();
+		var n = new THREE.Vector3(), n2 = new THREE.Vector3();
+		var w, t, test;
+
+		function handleVertex( v ) {
+
+			n.fromArray( normals, v * 3 );
+			n2.copy( n );
+
+			t = tan1[ v ];
+
+			// Gram-Schmidt orthogonalize
+
+			tmp.copy( t );
+			tmp.sub( n.multiplyScalar( n.dot( t ) ) ).normalize();
+
+			// Calculate handedness
+
+			tmp2.crossVectors( n2, t );
+			test = tmp2.dot( tan2[ v ] );
+			w = ( test < 0.0 ) ? - 1.0 : 1.0;
+
+			tangents[ v * 4 ] = tmp.x;
+			tangents[ v * 4 + 1 ] = tmp.y;
+			tangents[ v * 4 + 2 ] = tmp.z;
+			tangents[ v * 4 + 3 ] = w;
+
+		}
+
+		for ( var i = 0, il = groups.length; i < il; ++ i ) {
+
+			var group = groups[ i ];
+
+			var start = group.start;
+			var count = group.count;
+
+			for ( var j = start, jl = start + count; j < jl; j += 3 ) {
+
+				handleVertex( indices[ j + 0 ] );
+				handleVertex( indices[ j + 1 ] );
+				handleVertex( indices[ j + 2 ] );
+
+			}
+
+		}
+
 	}
 
 	/*
@@ -209,12 +415,14 @@ class World
 	}
 
 	initGlass() {
+		console.log("env map")
+		console.log(this.textureCube)
 		var frontGlass = this.meshes[MeshesNames.MESH_GLASS_FRONT];
 		//frontGlass.visible = false;
 
 		var uniforms = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(1,1,1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			alpha: { type: "f", value: 0.1}
 		};
 
@@ -231,7 +439,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			irradianceMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 		};
 
 		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
@@ -255,7 +463,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			irradianceMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 		};
 
 		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
@@ -270,6 +478,9 @@ class World
 
 	initGlossyMaterial()
 	{
+		console.log("env map")
+		console.log(this.textureCube)
+
 		var body = this.meshes[MeshesNames.MESH_BODY];
 		var simSlot = this.meshes[MeshesNames.MESH_SIM_SLOT];
 		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS];
@@ -286,7 +497,7 @@ class World
 
 		var uniforms1 = {
 				cspec:	{ type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
-				envMap:	{ type: "t", value: this.textureCube},
+				envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 				roughness: { type: "f", value: 0.2},
 				alpha: {type: "f", value: 1}
 			};
@@ -295,7 +506,7 @@ class World
 
 		var uniforms2 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -305,7 +516,7 @@ class World
 
 		var uniforms3 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 0.4}
 		};
@@ -315,7 +526,7 @@ class World
 
 		var uniforms4 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -345,23 +556,29 @@ class World
 		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
 		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
 		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
-
-		// console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
-		// console.log(specularMap)
-		// console.log(roughnessMap)
+		var normalMap = this.loadTexture(textureParameters.material + "_normal.png")
 		
+		var typeBackCover = TextureNames.TYPE_BACK_COVER.color 
+
+		console.log("env map")
+		console.log(this.textureCube)
+
 		var uniforms = {
-			diffuseMap:	{ type: "t", value: diffuseMap},
+			envMap: { type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			normalMap: { type: "t", value: normalMap},
+			neededTextures:{ type: "b", value: typeBackCover},
+			diffuseMap: { type: "t", value: diffuseMap},
 			specularMap: { type: "t", value: specularMap},
 			roughnessMap:	{ type: "t", value: roughnessMap},
-			pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, 7.0 ) },
-			clight:	{ type: "v3", value: new THREE.Vector3(100,100,100) },
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
 		};
 
 		//Setup shaders
-		var shader = this.shaders[Shaders.SHADER_BACK_COVER];
-		var params = new ShaderParams(shader, uniforms);
+		var materialExtensions = {
+			shaderTextureLOD: true // set to use shader texture LOD
+		};
+		var shader = new Shader("back_cover");
+		var params = new ShaderParams(shader, uniforms,materialExtensions);
 		params.addMesh(mesh);
 
 		this.shaderParams[ParamsNames.PARAMS_BACK_GLASS] = params;

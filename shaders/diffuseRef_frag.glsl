@@ -1,5 +1,5 @@
 uniform vec3 cdiff;
-uniform samplerCube irradianceMap;
+uniform samplerCube envMap;
 
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -24,7 +24,7 @@ void main() {
     // small quantity to prevent divisions by 0
     float nDotv = max(dot( n, v ),0.000001);
     // negate x to account for how cubemap is displayed on background
-    vec3 irradiance = textureCube( irradianceMap, worldN).rgb;
+    vec3 irradiance = textureCube( envMap, worldN).rgb;
     // texture in sRGB, linearize
     irradiance = pow( irradiance, vec3(2.2));
     vec3 outRadiance = cdiff*irradiance;

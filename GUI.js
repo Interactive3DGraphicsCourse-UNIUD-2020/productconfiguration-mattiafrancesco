@@ -28,6 +28,9 @@ class GUI
 
 			textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 			scene.background = textureCube;
+			params[ParamsNames.ENV_MAP] = textureCube
+			this.refreshEnvMap(params)
+
 		});
 		environmentMenu.addItem("Bridge", () => {
 
@@ -45,6 +48,9 @@ class GUI
 
 			textureCube.minFilter = THREE.LinearMipMapLinearFilter;
 			scene.background = textureCube;
+			params[ParamsNames.ENV_MAP] = textureCube
+			this.refreshEnvMap(params)
+
 		 });
 
 
@@ -68,7 +74,11 @@ class GUI
 		bodyMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.SILVER); });
 		bodyMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.VIOLET); });
 
-		var screenMenu = this.menu.addMenu("Screen");
+		var coverMenu = this.menu.addMenu("Cover");
+		coverMenu.addItem("Gold", () => { this.loadNewTexture(TextureNames.GOLD_TEXTURE_PATH,params) })
+		coverMenu.addItem("Carbon", () => { this.loadNewTexture(TextureNames.CARBON_TEXTURE_PATH,params) });
+		
+		 var screenMenu = this.menu.addMenu("Screen");
 		screenMenu.addItem("On", () => { params[ParamsNames.PARAMS_SCREEN].set("show", 1); });
 		screenMenu.addItem("Off", () => { params[ParamsNames.PARAMS_SCREEN].set("show", 0); });
 		
@@ -76,6 +86,45 @@ class GUI
 		var brightnessMenu = screenMenu.addMenu("Brightness");
 		for(let i=1;i<=maxBrightness;i++)
 			brightnessMenu.addItem(i, () => { params[ParamsNames.PARAMS_SCREEN].set("brightness", i*0.4/(maxBrightness-2)+0.6); });
+	}
+
+	refreshEnvMap(params) {
+		var meshesParamsNameWithEnvMap = [ParamsNames.PARAMS_ENV,ParamsNames.PARAMS_GRILL,ParamsNames.PARAMS_BUTTONS,ParamsNames.PARAMS_BODY,ParamsNames.PARAMS_ANTENNAS,ParamsNames.PARAMS_CAMERA_BACK_COVER,ParamsNames.PARAMS_CAMERA_BACK_BUMP,ParamsNames.PARAMS_BACK_GLASS]
+		meshesParamsNameWithEnvMap.forEach( function(paramName){
+			params[paramName].set("envMap",params[ParamsNames.ENV_MAP])
+		})
+	}
+
+	loadNewTexture(pathTexture,params){
+		var textureParameters = {
+			material: pathTexture,
+			repeatS: 1.0,
+			repeatT: 1.0,
+		}
+
+		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
+		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
+		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
+		var normalMap = this.loadTexture(textureParameters.material + "_normal.png")
+		
+		params[ParamsNames.PARAMS_BACK_GLASS].set("normalMap", normalMap)
+		params[ParamsNames.PARAMS_BACK_GLASS].set("specularMap", specularMap)
+		params[ParamsNames.PARAMS_BACK_GLASS].set("roughnessMap", roughnessMap)
+		params[ParamsNames.PARAMS_BACK_GLASS].set("diffuseMap", diffuseMap)
+	}
+
+	loadTexture(file) {
+		var texture = new THREE.TextureLoader().load( file , ( texture ) => {
+
+			texture.minFilter = THREE.LinearMipMapLinearFilter;
+			texture.anisotropy = this.anisotropy;
+			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+	  		texture.offset.set( 0, 0 );
+			texture.needsUpdate = true;
+
+			//document.appendChild(texture.image.attributes[1].ownerElement);
+		});// , () => {}, (e) => {alert(e); console.log(e);});
+		return texture;
 	}
 }
 
