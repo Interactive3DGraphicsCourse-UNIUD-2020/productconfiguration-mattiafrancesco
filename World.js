@@ -10,6 +10,7 @@ import * as Shaders from './References/ShadersNames.js';
 import * as ParamsNames from './References/ParamsNames.js';
 import * as TextureNames from './References/TextureNames.js';
 import * as MeshesNames from './References/MeshesNames.js';
+import * as ColorNames from './References/ColorNames.js';
 
 import * as Model from  './Model.js'
 
@@ -56,7 +57,25 @@ class World
 
 		this.shaderParams = {}
 		this.shaderParams[ParamsNames.ENV_MAP] = textureCube
-		//init
+
+
+		//Texture cover
+		//Load maps
+		var self = this;
+		var texturesToLoad = [TextureNames.GOLD_TEXTURE_PATH,TextureNames.CARBON_TEXTURE_PATH,TextureNames.METALGREEN_TEXTURE_PATH,TextureNames.SCIFI_TEXTURE_PATH]
+		texturesToLoad.forEach( function(texturePath) {
+			var specularMap = self.loadTexture(texturePath + "_albedo.png");
+			var roughnessMap = self.loadTexture(texturePath + "_roughness.png");
+			var normalMap = self.loadTexture(texturePath + "_normal.png")
+			self.shaderParams[texturePath] = []
+			self.shaderParams[texturePath][ParamsNames.NORMAL_MAP] = normalMap
+			self.shaderParams[texturePath][ParamsNames.ROUGH_MAP] = roughnessMap
+			self.shaderParams[texturePath][ParamsNames.SPECULAR_MAP] = specularMap
+		})
+
+		
+
+		//Mesh Model
 		Model.load('./model/scene.gltf',10, (model) =>
 		{
 			try
@@ -368,55 +387,9 @@ class World
 
 		apple.material.side = THREE.DoubleSide;
 		apple.material.needsUpdate = true;
-
-
-		/*
-		mesh.translateX(-4)
-		mesh.material.side = THREE.DoubleSide;
-		mesh.material.needsUpdate = true;
-
-		mesh1.material.side = THREE.BackSide;
-		mesh1.material.needsUpdate = true;
-		*/
-
-		// //Load maps
-		// var pathTexturesBackCover = "textures/Back_Cover/";
-		// var pathGoldTexture = "Gold/TexturesCom_Paint_GoldFake_1K";
-		// var pathCarbonTexture = "Carbon/TexturesCom_Plastic_CarbonFiber_1K"
-
-		// var textureParameters = {
-		// 	material: pathCarbonTexture,
-		// 	repeatS: 1.0,
-		// 	repeatT: 1.0,
-		// }
-
-		// var diffuseMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_albedo.png");
-		// var specularMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_metallic.png");
-		// var roughnessMap = this.loadTexture(pathTexturesBackCover + textureParameters.material + "_roughness.png");
-
-		// // console.log(pathTexturesBackCover + textureParameters.material + "_albedo.png")
-		// // console.log(specularMap)
-		// // console.log(roughnessMap)
-		
-		// var uniforms = {
-		// 	diffuseMap:	{ type: "t", value: diffuseMap},
-		// 	specularMap: { type: "t", value: specularMap},
-		// 	roughnessMap:	{ type: "t", value: roughnessMap},
-		// 	pointLightPosition:	{ type: "v3", value: new THREE.Vector3( 7.0, 7.0, 7.0 ) },
-		// 	clight:	{ type: "v3", value: new THREE.Vector3(100,100,100) },
-		// 	textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
-		// };
-
-		// //Setup shaders
-		// var shader = new Shader("back_cover");
-
-		// var params = new ShaderParams(shader, uniforms);
-		// params.addMesh(mesh);
 	}
 
 	initGlass() {
-		console.log("env map")
-		console.log(this.textureCube)
 		var frontGlass = this.meshes[MeshesNames.MESH_GLASS_FRONT];
 		//frontGlass.visible = false;
 
@@ -462,7 +435,7 @@ class World
 		var meshMute = this.meshes[MeshesNames.MESH_SWITCH_MUTE];
 
 		var uniforms = {
-			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
+			cdiff:	{ type: "v3", value: new THREE.Vector3(0,0,0) },
 			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 		};
 
@@ -478,8 +451,6 @@ class World
 
 	initGlossyMaterial()
 	{
-		console.log("env map")
-		console.log(this.textureCube)
 
 		var body = this.meshes[MeshesNames.MESH_BODY];
 		var simSlot = this.meshes[MeshesNames.MESH_SIM_SLOT];
@@ -525,7 +496,7 @@ class World
 		params3.addMesh(cameras_glass_up);
 
 		var uniforms4 = {
-			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
+			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1)},
 			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
@@ -553,23 +524,16 @@ class World
 			repeatT: 1.0,
 		}
 
-		var diffuseMap = this.loadTexture(textureParameters.material + "_albedo.png");
-		var specularMap = this.loadTexture(textureParameters.material + "_metallic.png");
-		var roughnessMap = this.loadTexture(textureParameters.material + "_roughness.png");
-		var normalMap = this.loadTexture(textureParameters.material + "_normal.png")
-		
-		var typeBackCover = TextureNames.TYPE_BACK_COVER.color 
-
-		console.log("env map")
-		console.log(this.textureCube)
+		console.log(TextureNames.TYPE_BACK_COVER.color)
 
 		var uniforms = {
+			cspecColor: { type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
+			roughnessColor: {type: "f", value: 0.2 },
 			envMap: { type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
-			normalMap: { type: "t", value: normalMap},
-			neededTextures:{ type: "b", value: typeBackCover},
-			diffuseMap: { type: "t", value: diffuseMap},
-			specularMap: { type: "t", value: specularMap},
-			roughnessMap:	{ type: "t", value: roughnessMap},
+			normalMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.NORMAL_MAP]},
+			neededTextures:{ type: "b", value: TextureNames.TYPE_BACK_COVER.color },
+			specularMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.SPECULAR_MAP]},
+			roughnessMap:	{ type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.ROUGH_MAP]},
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
 		};
 

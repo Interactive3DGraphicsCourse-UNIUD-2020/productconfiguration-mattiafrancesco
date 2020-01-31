@@ -2,18 +2,20 @@ precision highp float;
 precision highp int;
 
 uniform samplerCube envMap;
-uniform sampler2D diffuseMap;
 uniform sampler2D specularMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D normalMap;
 uniform vec2 textureRepeat;
 uniform bool neededTextures;
+uniform vec3 cspecColor;
+uniform float roughnessColor;
 
 varying vec3 vNormal;
 varying vec3 vPosition;
 varying vec2 vUV;
 varying vec3 vTangent;
 varying vec3 vBitangent;
+
 
 const float PI = 3.14159;
 #define saturate(a) clamp( a, 0.0, 1.0 )
@@ -46,10 +48,6 @@ float GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {
 return ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );
 }
 
-vec3 FSchlick(float lDoth,vec3 cspec) {
-    return (cspec + (vec3(1.0)-cspec)*pow(1.0 - lDoth,5.0));
-}
-
 
 void main() {
 
@@ -61,7 +59,9 @@ void main() {
 	vec3 mapN = texture2D( normalMap, vUV * textureRepeat).xyz * 2.0 - 1.0;
 	mapN.xy = textureRepeat * mapN.xy;
 	vec3 n = normalize( vTBN * mapN );
-    vec3 worldN = inverseTransformDirection( n, viewMatrix );
+	if(!neededTextures) {
+		n = normal;
+	}
 
 	//other
 	//vec3 n = normalize( vNormal );  // interpolation destroys normalization, so we have to normalize
@@ -71,30 +71,23 @@ void main() {
 	float nDotv = max(dot( n, v ),0.000001);
 
 	//read textures
-	vec3 cdiff = texture2D( diffuseMap, vUV * textureRepeat).rgb;
-	cdiff = pow( cdiff, vec3(2.2));
-
 	vec3 cspec = texture2D( specularMap, vUV * textureRepeat).rgb;
 	cspec = pow( cspec, vec3(2.2));
 
 	float roughness = texture2D( roughnessMap, vUV * textureRepeat).r;
 
-	//Diffuse
-    vec3 irradiance = textureCube( envMap, worldN).rgb;
-    irradiance = pow( irradiance, vec3(2.2));
-    vec3 outRadianceDiffuse = cdiff*irradiance;
-
 	//Specular
+	if (!neededTextures) {
+		cspec = cspecColor;
+		roughness = roughnessColor;
+	}
+
 	float blinnShininessExponent = GGXRoughnessToBlinnExponent(roughness);
 	float specularMIPLevel = getSpecularMIPLevel(blinnShininessExponent ,11 );
 	vec3 envLight = textureCubeLodEXT( envMap, vec3(-r.x, r.yz), specularMIPLevel ).rgb;
 	envLight = pow( envLight, vec3(2.2));
-	vec3 outRadianceSpecular = envLight * BRDF_Specular_GGX_Environment(n, v, cspec, roughness);;
-
-	//Total
-	vec3 fresnel = FSchlick(nDotv,cspec);
-	vec3 outRadiance = ((vec3(1.0)-fresnel)*outRadianceDiffuse) + (fresnel*outRadianceSpecular);
-
+	vec3 outRadiance = envLight * BRDF_Specular_GGX_Environment(n, v, cspec, roughness);;
+	
 	gl_FragColor = vec4(pow( outRadiance, vec3(1.0/2.2)), 1);
 
 }
