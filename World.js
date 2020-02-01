@@ -10,7 +10,6 @@ import * as Shaders from './References/ShadersNames.js';
 import * as ParamsNames from './References/ParamsNames.js';
 import * as TextureNames from './References/TextureNames.js';
 import * as MeshesNames from './References/MeshesNames.js';
-import * as ColorNames from './References/ColorNames.js';
 
 import * as Model from  './Model.js'
 
@@ -31,47 +30,43 @@ class World
 
 		this.loader = new THREE.CubeTextureLoader();
 
-		/*
-		//GUI
-		this.gui = new GUI();
-
-		//Animations
-		this.startTime = Date.now();
-		*/
-
-		//Load environment texture
-		var cityPath = TextureNames.CITY_PATH
-		//this.loader.setPath(cityPath);
-
-		var textureCube = new this.loader.load([
-		cityPath+'posx.jpg', cityPath+'negx.jpg',
-		cityPath+'posy.jpg', cityPath+'negy.jpg',
-		cityPath+'posz.jpg', cityPath+'negz.jpg'
-		]);
-		textureCube.minFilter = THREE.LinearMipMapLinearFilter;
-		this.scene.background = textureCube;
-
+		//Init struct
 		this.shaders = {};
 		for(var shaderName of Shaders.shadersNames)
 			this.shaders[shaderName] = new Shader(shaderName);
 
 		this.shaderParams = {}
-		this.shaderParams[ParamsNames.ENV_MAP] = textureCube
+		this.texturesLoaded = {}
 
+		//Texture Envmap
+		var self = this;
+		var envMapToLoad = [TextureNames.CITY_PATH,TextureNames.BRIDGE_PATH]
+		envMapToLoad.forEach( function(envPath){
+			var textureCube = new self.loader.load([
+				envPath+'posx.jpg', envPath+'negx.jpg',
+				envPath+'posy.jpg', envPath+'negy.jpg',
+				envPath+'posz.jpg', envPath+'negz.jpg'
+				]);
+			textureCube.minFilter = THREE.LinearMipMapLinearFilter;
+			self.texturesLoaded[envPath] = textureCube
+		} )
+		
+		console.log(this.texturesLoaded[TextureNames.CITY_PATH])
+		//charge one envMap
+		this.scene.background = this.texturesLoaded[TextureNames.CITY_PATH];
 
 		//Texture cover
-		//Load maps
-		var self = this;
 		var texturesToLoad = [TextureNames.GOLD_TEXTURE_PATH,TextureNames.CARBON_TEXTURE_PATH,TextureNames.METALGREEN_TEXTURE_PATH,TextureNames.SCIFI_TEXTURE_PATH]
 		texturesToLoad.forEach( function(texturePath) {
 			var specularMap = self.loadTexture(texturePath + "_albedo.png");
 			var roughnessMap = self.loadTexture(texturePath + "_roughness.png");
 			var normalMap = self.loadTexture(texturePath + "_normal.png")
-			self.shaderParams[texturePath] = []
-			self.shaderParams[texturePath][ParamsNames.NORMAL_MAP] = normalMap
-			self.shaderParams[texturePath][ParamsNames.ROUGH_MAP] = roughnessMap
-			self.shaderParams[texturePath][ParamsNames.SPECULAR_MAP] = specularMap
+			self.texturesLoaded[texturePath] = []
+			self.texturesLoaded[texturePath][TextureNames.NORMAL_MAP] = normalMap
+			self.texturesLoaded[texturePath][TextureNames.ROUGH_MAP] = roughnessMap
+			self.texturesLoaded[texturePath][TextureNames.SPECULAR_MAP] = specularMap
 		})
+
 
 		
 
@@ -387,7 +382,7 @@ class World
 
 		var uniforms = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.0) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -409,7 +404,7 @@ class World
 
 		var uniforms = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(1,1,1) },
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			alpha: { type: "f", value: 0.1}
 		};
 
@@ -417,7 +412,7 @@ class World
 		var params = new ShaderParams(shader, uniforms, {}, true);
 		params.addMesh(frontGlass);
 
-		this.shaderParams[ParamsNames.PARAMS_ENV] = params;
+		this.shaderParams[ParamsNames.PARAMS_GLASS] = params;
 	}
 
 	initDiffuseMaterial() {
@@ -426,7 +421,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 		};
 
 		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
@@ -450,7 +445,7 @@ class World
 
 		var uniforms = {
 			cdiff:	{ type: "v3", value: new THREE.Vector3(0,0,0) },
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 		};
 
 		var shader = this.shaders[Shaders.SHADER_DIFFUSE_REF];
@@ -483,7 +478,7 @@ class World
 
 		var uniforms1 = {
 				cspec:	{ type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
-				envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+				envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 				roughness: { type: "f", value: 0.2},
 				alpha: {type: "f", value: 1}
 			};
@@ -492,7 +487,7 @@ class World
 
 		var uniforms2 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -502,7 +497,7 @@ class World
 
 		var uniforms3 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1) },
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 0.4}
 		};
@@ -512,7 +507,7 @@ class World
 
 		var uniforms4 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.1,0.1,0.1)},
-			envMap:	{ type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			roughness: { type: "f", value: 0.2},
 			alpha: {type: "f", value: 1}
 		};
@@ -521,7 +516,7 @@ class World
 
 		var uniforms5 = {
 			cspec:	{ type: "v3", value: new THREE.Vector3(0.01,0.01,0.01) },
-			envMap:	{ type: "t", value: this.textureCube},
+			envMap:	{ type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
 			roughness: { type: "f", value: 0.7},
 			alpha: {type: "f", value: 1}
 		};
@@ -538,11 +533,8 @@ class World
 	{
 		var mesh = this.meshes[MeshesNames.MESH_GLASS_BACK];
 
-		//Load maps
-		var pathGoldTexture = TextureNames.GOLD_TEXTURE_PATH
 
 		var textureParameters = {
-			material: pathGoldTexture,
 			repeatS: 1.0,
 			repeatT: 1.0,
 		}
@@ -552,11 +544,11 @@ class World
 		var uniforms = {
 			cspecColor: { type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
 			roughnessColor: {type: "f", value: 0.2 },
-			envMap: { type: "t", value: this.shaderParams[ParamsNames.ENV_MAP]},
-			normalMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.NORMAL_MAP]},
+			envMap: { type: "t", value: this.texturesLoaded[TextureNames.CITY_PATH]},
+			normalMap: { type: "t", value: this.texturesLoaded[TextureNames.GOLD_TEXTURE_PATH][ParamsNames.NORMAL_MAP]},
 			neededTextures:{ type: "b", value: TextureNames.TYPE_BACK_COVER.color },
-			specularMap: { type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.SPECULAR_MAP]},
-			roughnessMap:	{ type: "t", value: this.shaderParams[textureParameters.material][ParamsNames.ROUGH_MAP]},
+			specularMap: { type: "t", value: this.texturesLoaded[TextureNames.GOLD_TEXTURE_PATH][ParamsNames.SPECULAR_MAP]},
+			roughnessMap:	{ type: "t", value: this.texturesLoaded[TextureNames.GOLD_TEXTURE_PATH][ParamsNames.ROUGH_MAP]},
 			textureRepeat: { type: "v2", value: new THREE.Vector2(textureParameters.repeatS,textureParameters.repeatT) }
 		};
 
