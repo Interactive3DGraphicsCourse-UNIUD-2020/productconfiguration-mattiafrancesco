@@ -91,17 +91,14 @@ class World
 					var mesh = obj.children[0];
 					this.meshes[obj.name] = mesh
 
+					//per sistemare i problemi del modello creato con blender
 					if(obj.name == MeshesNames.MESH_CAMERA_BACK) {
-						console.log("sono entrato")
-						console.log(obj)
-
 						obj.rotation.x = 1.570821510773955
 						obj.rotation.y = 0.010451478350490786
 						obj.rotation.z = 1.5713388864561089
 						obj.scale.x = 0.00000007
 						obj.scale.y = 0.2026411197166064
 						obj.scale.z = 0.4270733935753901
-
 					}
 
 					var testColor = 0X000000;
