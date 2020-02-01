@@ -8,10 +8,3 @@ export var PARAMS_BACK_GLASS = "back_glass";
 export var PARAMS_SCREEN = "screen";
 export var PARAMS_LOGOS = "logos";
 export var PARAMS_GRILL = "grill"
-
-export var ENV_MAP
-export var TEXTURE_BACK
-
-export var NORMAL_MAP = "n"
-export var ROUGH_MAP = "r"
-export var SPECULAR_MAP = "s"

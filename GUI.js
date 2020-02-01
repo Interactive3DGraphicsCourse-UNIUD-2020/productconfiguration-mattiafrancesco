@@ -28,19 +28,18 @@ class GUI
 		antennasMenu.addItem("Red", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.RED); });
 		antennasMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.YELLOW); });
 		antennasMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.SILVER); });
+		
 		antennasMenu.addItem("Green", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.GREEN); });
-		antennasMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.BLUE); });
-		antennasMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.VIOLET); });
+		antennasMenu.addItem("Gold", () => { params[ParamsNames.PARAMS_ANTENNAS].set("cspec", ColorNames.GOLD); });
 
 		var buttonsMenu = this.menu.addMenu("Buttons")
 		buttonsMenu.addItem("Black", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.BLACK); })
 		buttonsMenu.addItem("Red", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.RED); })
 		buttonsMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff",ColorNames.YELLOW); });
-		buttonsMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.SILVER); })
+		buttonsMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.SILVER); })
+		
 		buttonsMenu.addItem("Green", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.GREEN); })
-		buttonsMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.BLUE); })
-		buttonsMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.VIOLET); })
-
+		buttonsMenu.addItem("Gold", () => { params[ParamsNames.PARAMS_BUTTONS].set("cdiff", ColorNames.GOLD); })
 
 		var logoMenu = this.menu.addMenu("Logo");
 		logoMenu.addItem("Smooth", () => { params[ParamsNames.PARAMS_LOGOS].set("roughness", 0.2);} );
@@ -51,9 +50,9 @@ class GUI
 		bodyMenu.addItem("Red", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.RED); })
 		bodyMenu.addItem("Yellow", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.YELLOW); });
 		bodyMenu.addItem("Silver", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.SILVER); });
+		
 		bodyMenu.addItem("Green", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.GREEN); });
-		bodyMenu.addItem("Blue", () => { params[ParamsNames.PARAMS_BODY].set("cspec", ColorNames.BLUE); })
-		bodyMenu.addItem("Violet", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.VIOLET); });		
+		bodyMenu.addItem("Gold", () => { params[ParamsNames.PARAMS_BODY].set("cspec",ColorNames.GOLD); });
 
 
 		var coverMenu = this.menu.addMenu("Cover");
@@ -61,9 +60,7 @@ class GUI
 		coverMenu.addItem("Red", () => { this.setNewColor(ColorNames.RED,params) })
 		coverMenu.addItem("Yellow", () => { this.setNewColor(ColorNames.YELLOW,params) })
 		coverMenu.addItem("Silver", () => { this.setNewColor(ColorNames.SILVER,params) })
-		coverMenu.addItem("Blue", () => { this.setNewColor(ColorNames.BLUE,params) })
-		coverMenu.addItem("Violet", () => { this.setNewColor(ColorNames.VIOLET,params) });
-
+		
 		coverMenu.addItem("Gold", () => { this.setNewTexture(TextureNames.GOLD_TEXTURE_PATH,params,textures) })
 		coverMenu.addItem("Carbon", () => { this.setNewTexture(TextureNames.CARBON_TEXTURE_PATH,params,textures) });
 		coverMenu.addItem("MetalGreen", () => { this.setNewTexture(TextureNames.METALGREEN_TEXTURE_PATH,params,textures) });

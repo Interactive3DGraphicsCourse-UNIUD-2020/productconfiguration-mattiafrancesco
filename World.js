@@ -34,8 +34,14 @@ class World
 		this.shaders = {};
 		for(var shaderName of Shaders.shadersNames)
 			this.shaders[shaderName] = new Shader(shaderName);
-
+		/*	Saved all params for shaders
+			access with ParamsName
+		*/
 		this.shaderParams = {}
+		/*	Saved all textures
+			Access with TexturesName
+			Default Scena = City, Cover = Gold
+		*/
 		this.texturesLoaded = {}
 
 		//Texture Envmap
@@ -66,9 +72,6 @@ class World
 			self.texturesLoaded[texturePath][TextureNames.ROUGH_MAP] = roughnessMap
 			self.texturesLoaded[texturePath][TextureNames.SPECULAR_MAP] = specularMap
 		})
-
-
-		
 
 		//Mesh Model
 		Model.load('./model/scene.gltf',10, (model) =>
