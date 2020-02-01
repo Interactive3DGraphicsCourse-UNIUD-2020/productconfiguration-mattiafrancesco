@@ -4,7 +4,7 @@ class Products
 {
 	constructor()
 	{
-		this.products = [{title: "iPhone", desc: "Bello smartphone: sovrapprezzato, ma apprezzato", price: 1000, img: "iphone.png", model: "iphone.gltf"}, {title: "Coming soon...", desc: "Coming soon...", price: 0, img: "coming-soon.png"}];
+		this.products = [{title: "iPhone", desc: "Bello smartphone: sovrapprezzato, ma apprezzato<br /><br /><br />descrizione<br /><br /><br />descrizione<br /><br /><br />descrizione", price: 1000, img: "iphone.png", model: "scene.gltf"}, {title: "Coming soon...", desc: "Coming soon...", price: 0, img: "coming-soon.png"}];
 		this.productsToShow = this.products;
 
 
@@ -12,6 +12,9 @@ class Products
 		{
 			this.show();
 		});
+
+		var closeElem = $("#close");
+		closeElem.click(() => { this.hideProductsDetails(); });
 	}
 
 	show()
@@ -71,6 +74,12 @@ class Products
 
 		var descElem = detailsElem.find("#desc");
 		descElem.html(product.desc);
+	}
+
+	hideProductsDetails()
+	{
+		var detailsElem = $("#productDetails");
+		detailsElem.hide();
 	}
 }
 

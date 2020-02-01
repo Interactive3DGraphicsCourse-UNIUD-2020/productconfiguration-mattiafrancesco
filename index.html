@@ -13,8 +13,9 @@
 			new Products();
 		</script>
 		<header>
-			<img src="logo.png" />
+			<img id="logo" src="images/logo.png" />
 			<input type="text" name="search" placeholder="Search item..." />
+			<img id="cart" src="images/cart.png" />
 		</header>
 		<nav>
 			<div></div>
@@ -31,8 +32,11 @@
 
 		<div id="productDetails">
 			<div id="productConfigurator"></div>
-			<div id="title"></div>
-			<div id="desc"></div>
+			<div id="close">Close</div>
+			<div id="detailsContainer">
+				<div id="title"></div>
+				<div id="desc"></div>
+			</div>
 		</div>
 	</body>
 </html>

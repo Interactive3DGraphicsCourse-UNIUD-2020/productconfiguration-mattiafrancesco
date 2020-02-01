@@ -35,6 +35,7 @@ class Engine
 		canvas.addClass("productConfiguratorCanvas");
 
 		var htmlContainer = $("#"+htmlContainerID);
+		htmlContainer.html("");
 		htmlContainer.append(canvas);
 		this.htmlContainer = htmlContainer;
 
@@ -63,7 +64,7 @@ class Engine
 		
 
 		//Controls
-		this.controls = new OrbitControls(this.world.camera);
+		this.controls = new OrbitControls(this.world.camera, this.renderer.domElement);
 		this.controls.addEventListener("change", this.render.bind(this));
 		this.controls.target.set(0, 0, -10);
 	}
