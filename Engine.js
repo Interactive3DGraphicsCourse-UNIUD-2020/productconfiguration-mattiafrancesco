@@ -57,7 +57,7 @@ class Engine
 
 
 		//Menu
-		this.gui = new GUI(htmlContainerID, this.world.shaderParams,this.world.scene);
+		this.gui = new GUI(htmlContainerID, this.world.shaderParams,this.world.scene,this.world.texturesLoaded);
 		//this.gui.menu.add("tmp", () => { this.world. });
 		
 
