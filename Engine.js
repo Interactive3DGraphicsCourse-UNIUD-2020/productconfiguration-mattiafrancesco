@@ -9,12 +9,12 @@ import {GUI} from './GUI.js';
 
 class Engine
 {
-	constructor(htmlContainerID)
+	constructor(htmlContainerID, model)
 	{
-		this.init(htmlContainerID);
+		this.init(htmlContainerID, model);
 	}
 
-	init(htmlContainerID)
+	init(htmlContainerID, model)
 	{
 		//Setup renderer
 		this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -27,8 +27,8 @@ class Engine
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		//World
-		this.world = new World();
-		this.world.anisotropy = this.renderer.getMaxAnisotropy();
+		var anisotropy = this.renderer.getMaxAnisotropy();
+		this.world = new World(model, anisotropy);
 
 		//Append canvas
 		var canvas = $(this.renderer.domElement);
@@ -72,6 +72,8 @@ class Engine
 	{
 		var w = this.htmlContainer.width();
 		var h = this.htmlContainer.height();
+
+		console.log(w, h);
 
 		this.renderer.setSize(w, h);
 

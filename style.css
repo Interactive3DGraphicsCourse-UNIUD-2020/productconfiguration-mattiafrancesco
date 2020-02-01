@@ -144,10 +144,12 @@ footer
 
 
 /*-------------------------------------productConfigurator-------------------------------------*/
-.productConfigurator
+#productConfigurator
 {
-	width: 50%;
-	height: 50%;
+	top: 0px;
+	left: 0px;
+	height: 95%;
+	width: 100%;
 	position: relative;
 }
 

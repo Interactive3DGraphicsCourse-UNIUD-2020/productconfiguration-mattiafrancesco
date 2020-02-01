@@ -15,7 +15,7 @@ import * as Model from  './Model.js'
 
 class World
 {
-	constructor(anisotropy)
+	constructor(model, anisotropy)
 	{
 		this.anisotropy = anisotropy;
 
@@ -58,7 +58,7 @@ class World
 		this.shaderParams = {}
 
 		//init
-		Model.load('./model/scene.gltf',10, (model) =>
+		Model.load("./model/"+model, 10, (model) =>
 		{
 			console.log(model)
 			try
