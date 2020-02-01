@@ -80,29 +80,25 @@ class World
 						console.log("sono entrato")
 						console.log(obj)
 
-						obj.rotation.x = 0
-						obj.rotation.y = 0
-						obj.rotation.z = 0
-						obj.scale.x = 0.0000001
+						obj.rotation.x = 1.570821510773955
+						obj.rotation.y = 0.010451478350490786
+						obj.rotation.z = 1.5713388864561089
+						obj.scale.x = 0.00000007
+						obj.scale.y = 0.2026411197166064
+						obj.scale.z = 0.4270733935753901
 
 					}
-
-					
 
 					var testColor = 0X000000;
 
 					mesh.material = new THREE.MeshBasicMaterial({color: testColor});
 				}.bind(this));
 
-				console.log(model)
-
-
 				model.rotation.x = ( Math.PI / 180);
 				model.translateZ(-10);
 				model.translateY(-2);
 
 				this.initMeshes();
-
 				this.modelGroup.add(model);
 			}
 			catch(e)
@@ -154,7 +150,6 @@ class World
 		this.initDiffuseMaterial(); 
 		this.initGlass();
 		this.initScreen();
-		this.initTest()
 	}
 
 	initAppleLogo() {
@@ -244,20 +239,6 @@ class World
 		this.shaderParams[ParamsNames.PARAMS_BUTTONS] = params;
 	}
 
-
-	initTest() {
-		var meshCameraBack = this.meshes[MeshesNames.MESH_CAMERA_BACK];
-		console.log("cover fotocamere dietro")
-		console.log(meshCameraBack)
-		meshCameraBack.material.side = THREE.DoubleSide;
-		meshCameraBack.material.needsUpdate = true;
-		meshCameraBack.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
-
-		var t2 = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
-		console.log("t2")
-		console.log(t2)
-	}
-
 	initGlossyMaterial()
 	{
 		var body = this.meshes[MeshesNames.MESH_BODY];
@@ -265,6 +246,7 @@ class World
 		var antennas = this.meshes[MeshesNames.MESH_ANTENNAS];
 		var cameras_glass_up = this.meshes[MeshesNames.MESH_CAMERA_BACK_COVER];
 		var cameras_body = this.meshes[MeshesNames.MESH_CAMERA_BACK_BUMP];
+		var coverCamera = this.meshes[MeshesNames.MESH_CAMERA_BACK]
 
 		//Setup shaders
 		var shader = this.shaders[Shaders.SHADER_GLOSSY_REF];
@@ -312,6 +294,14 @@ class World
 		var params4 = new ShaderParams(shader, uniforms4, materialExtensions);
 		params4.addMesh(cameras_body);
 
+		var uniforms5 = {
+			cspec:	{ type: "v3", value: new THREE.Vector3(0.01,0.01,0.01) },
+			envMap:	{ type: "t", value: this.textureCube},
+			roughness: { type: "f", value: 0.7},
+			alpha: {type: "f", value: 1}
+		};
+		var params5 = new ShaderParams(shader, uniforms5, materialExtensions);
+		params5.addMesh(coverCamera);
 
 		this.shaderParams[ParamsNames.PARAMS_BODY] = params1;
 		this.shaderParams[ParamsNames.PARAMS_ANTENNAS] = params2;
