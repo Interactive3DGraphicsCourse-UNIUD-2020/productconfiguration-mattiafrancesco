@@ -15,7 +15,7 @@ import * as Model from  './Model.js'
 
 class World
 {
-	constructor(anisotropy)
+	constructor(model, anisotropy)
 	{
 		this.anisotropy = anisotropy;
 
@@ -38,6 +38,7 @@ class World
 			access with ParamsName
 		*/
 		this.shaderParams = {}
+<<<<<<< HEAD
 		/*	Saved all textures
 			Access with TexturesName
 			Default Scena = City, Cover = Gold
@@ -75,6 +76,11 @@ class World
 
 		//Mesh Model
 		Model.load('./model/scene.gltf',10, (model) =>
+=======
+
+		//init
+		Model.load("./model/"+model, 10, (model) =>
+>>>>>>> feature/sito
 		{
 			try
 			{

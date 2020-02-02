@@ -3,31 +3,46 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>ACME product configuration</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<style type="text/css">
-			body 
-			{
-				margin: 0px;
-			}
-		</style>
 	</head>
 
 	<body>
-		<div id="productConfigurator"></div>
 		<script type="text/javascript" src="build/jquery.min.js"></script>
 		<script type="module">
-			import {Engine} from './Engine.js';
+			import {Products} from './products.js';
 
-			try
-			{
-				var engine = new Engine("productConfigurator");
-
-				engine.start();
-			}
-			catch(e)
-			{
-				alert(e);
-				console.log(e)
-			}
+			new Products();
 		</script>
+		<header>
+			<img id="logo" src="images/logo.png" />
+			<input type="text" name="search" placeholder="Search item..." />
+			<img id="cart" src="images/cart.png" />
+		</header>
+		<nav>
+			<div></div>
+			<a>Phones</a>
+			<a>Tablets</a>
+			<a>Desktop</a>
+		</nav>
+		<main>
+			<aside>
+				<p>lorem ipsum</p>
+			</aside>
+			<section id="articles">
+			</section>
+		</main>
+		<footer></footer>
+
+		<div id="opacity"></div>
+		<div id="productDetails">
+			<div id="productConfigurator"></div>
+			<div id="close">Close</div>
+			<div id="detailsContainer">
+				<div id="buybg">
+					<div id="buy">Buy</div>
+				</div>
+				<div id="title"></div>
+				<div id="desc"></div>
+			</div>
+		</div>
 	</body>
 </html>

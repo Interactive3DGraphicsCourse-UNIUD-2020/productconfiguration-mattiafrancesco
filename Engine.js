@@ -9,12 +9,20 @@ import {GUI} from './GUI.js';
 
 class Engine
 {
-	constructor(htmlContainerID)
+	constructor(htmlContainerID, model)
 	{
-		this.init(htmlContainerID);
+		if(model !== undefined)
+		{
+			this.init(htmlContainerID, model);
+		}
+		else
+		{
+			var htmlContainer = $("#"+htmlContainerID);
+			htmlContainer.html("<img src=\"images/no_preview.jpg\" />");
+		}
 	}
 
-	init(htmlContainerID)
+	init(htmlContainerID, model)
 	{
 		//Setup renderer
 		this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -27,15 +35,17 @@ class Engine
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		//World
-		this.world = new World();
-		this.world.anisotropy = this.renderer.getMaxAnisotropy();
+		var anisotropy = this.renderer.getMaxAnisotropy();
+		this.world = new World(model, anisotropy);
 
 		//Append canvas
 		var canvas = $(this.renderer.domElement);
 		canvas.addClass("productConfiguratorCanvas");
 
 		var htmlContainer = $("#"+htmlContainerID);
+		htmlContainer.html("");
 		htmlContainer.append(canvas);
+		this.htmlContainer = htmlContainer;
 
 
 		//Handle resize
@@ -62,17 +72,22 @@ class Engine
 		
 
 		//Controls
-		this.controls = new OrbitControls(this.world.camera);
+		this.controls = new OrbitControls(this.world.camera, this.renderer.domElement);
 		this.controls.addEventListener("change", this.render.bind(this));
 		this.controls.target.set(0, 0, -10);
 	}
 	
 	resize()
 	{
-		var windowWidth = window.innerWidth;
-		var windowHeight = window.innerHeight;
+		var w = this.htmlContainer.width();
+		var h = this.htmlContainer.height();
 
-		this.renderer.setSize(windowWidth, windowHeight);
+		console.log(w, h);
+
+		this.renderer.setSize(w, h);
+
+		this.world.camera.aspect = w/h;
+		this.world.camera.updateProjectionMatrix();
 	}
 
 	start()
