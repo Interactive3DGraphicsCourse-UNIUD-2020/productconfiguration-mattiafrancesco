@@ -72,8 +72,6 @@ class Engine
 		var w = this.htmlContainer.width();
 		var h = this.htmlContainer.height();
 
-		console.log(w, h);
-
 		this.renderer.setSize(w, h);
 
 		this.world.camera.aspect = w/h;

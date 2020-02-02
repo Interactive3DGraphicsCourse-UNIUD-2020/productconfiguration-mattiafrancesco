@@ -58,7 +58,7 @@ class World
 			self.texturesLoaded[envPath] = textureCube
 		} )
 		
-		console.log(this.texturesLoaded[TextureNames.CITY_PATH])
+		//console.log(this.texturesLoaded[TextureNames.CITY_PATH])
 		//charge one envMap
 		this.scene.background = this.texturesLoaded[TextureNames.CITY_PATH];
 
@@ -543,7 +543,7 @@ class World
 			repeatT: 1.0,
 		}
 
-		console.log(TextureNames.TYPE_BACK_COVER.color)
+		//console.log(TextureNames.TYPE_BACK_COVER.color)
 
 		var uniforms = {
 			cspecColor: { type: "v3", value: new THREE.Vector3(0.8,0.8,0.8) },
