@@ -74,12 +74,14 @@ class Products
 
 		var descElem = detailsElem.find("#desc");
 		descElem.html(product.desc);
+
+		$("#opacity").show();
 	}
 
 	hideProductsDetails()
 	{
-		var detailsElem = $("#productDetails");
-		detailsElem.hide();
+		$("#productDetails").hide();
+		$("#opacity").hide();
 	}
 }
 

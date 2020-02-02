@@ -11,7 +11,15 @@ class Engine
 {
 	constructor(htmlContainerID, model)
 	{
-		this.init(htmlContainerID, model);
+		if(model !== undefined)
+		{
+			this.init(htmlContainerID, model);
+		}
+		else
+		{
+			var htmlContainer = $("#"+htmlContainerID);
+			htmlContainer.html("<img src=\"images/no_preview.jpg\" />");
+		}
 	}
 
 	init(htmlContainerID, model)

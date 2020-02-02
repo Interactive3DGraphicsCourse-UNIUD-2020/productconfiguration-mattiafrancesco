@@ -18,9 +18,9 @@ header
 
 #logo
 {
-	margin: 15px;
+	margin: 20px 15px;
 	margin-right: 0px;
-	height: 60px;
+	height: 50px;
 	width: 110px;
 }
 
@@ -93,6 +93,11 @@ aside
 	border-right: 1px solid #000000;
 }
 
+aside p
+{
+	margin: 10px;
+}
+
 section
 {
 	margin: 126px 0px 0px 300px;
@@ -140,6 +145,19 @@ footer
 }
 
 /*---------------------------------------productDetails----------------------------------------*/
+#opacity
+{
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	opacity: 0.7;
+	background: #000000;
+	display: none;
+	z-index: 1;
+}
+
 #productDetails
 {
 	position: fixed;
@@ -148,7 +166,7 @@ footer
 	left: 5%;
 	right: 5%;
 	overflow-y: scroll;
-	z-index: 1;
+	z-index: 2;
 	background: #FFFFFF;
 	border: 2px solid #000000;
 	border-radius: 15px;
@@ -176,13 +194,41 @@ footer
 #detailsContainer
 {
 	margin: 10px;
+	position: relative;
 }
 
 #title
 {
-	font-size: 20px;
+	font-size: 24px;
 	border-bottom: 1px dashed #000000;
 	margin-bottom: 15px;
+}
+
+#buy
+{
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: 20px;
+	right: 10px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	border: 2px solid #314570;
+	border-radius: 5px;
+	line-height: 35px;
+	color: #314570;
+	cursor: pointer;
+}
+
+#buybg
+{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 190px;
+	height: 55px;
+	background: #FFFFFF;
 }
 
 /*-------------------------------------productConfigurator-------------------------------------*/
@@ -193,6 +239,13 @@ footer
 	height: 80%;
 	width: 100%;
 	position: relative;
+	text-align: center;
+	border-bottom: 1px solid #000000;
+}
+
+#productConfigurator img
+{
+	height: 100%;
 }
 
 .productConfiguratorCanvas
