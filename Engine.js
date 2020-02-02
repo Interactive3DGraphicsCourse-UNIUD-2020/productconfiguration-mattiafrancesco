@@ -56,16 +56,6 @@ class Engine
 		this.resize();
 
 
-		//Stats
-		this.stats = new Stats();
-
-		//Append stats element
-		var statElem = $(this.stats.domElement);
-		statElem.addClass("productConfiguratorStats");
-
-		htmlContainer.append(statElem);
-
-
 		//Menu
 		this.gui = new GUI(htmlContainerID, this.world.shaderParams,this.world.scene,this.world.texturesLoaded);
 		//this.gui.menu.add("tmp", () => { this.world. });
@@ -104,7 +94,6 @@ class Engine
 			this.update();
 		});
 
-		this.stats.update();
 		this.controls.update();
 
 		this.world.update();
