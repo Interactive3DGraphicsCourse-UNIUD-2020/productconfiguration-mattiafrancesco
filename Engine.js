@@ -11,7 +11,7 @@ class Engine
 {
 	constructor(htmlContainerID, model)
 	{
-		if(model !== undefined)
+		if(typeof model != "undefined")
 		{
 			this.init(htmlContainerID, model);
 		}
@@ -82,10 +82,13 @@ class Engine
 
 	start()
 	{
-		console.log("Engine ready!");
-		console.log("Starting engine...");
+		if(typeof this.renderer != "undefined")
+		{
+			console.log("Engine ready!");
+			console.log("Starting engine...");
 
-		this.update();
+			this.update();
+		}
 	}
 
 	update()
